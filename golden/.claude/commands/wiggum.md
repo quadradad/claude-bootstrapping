@@ -29,8 +29,9 @@ Detect the current working context:
 
 ```bash
 git branch --show-current
-gh api repos/{owner}/{repo}/milestones --jq '.[] | select(.title == "MILESTONE")'
 ```
+
+Check the milestone using the **list milestones** operation (CLAUDE.md § Issue Tracker), filtering for the target milestone.
 
 **Discover release PR:**
 Find the open draft PR from the release branch to main:
@@ -108,7 +109,7 @@ This runs the project's linting, type-checking, and all tests.
 - Maximum 3 retry cycles
 - If still failing after 3 retries, revert the branch changes, log the failure as a comment on the issue, skip to the next issue, and continue the loop
 
-**Pre-existing failures:** If a test file that you did NOT modify is failing, the failure is pre-existing. Create a GitHub issue for it (if one doesn't already exist) and continue — do not silently work around it.
+**Pre-existing failures:** If a test file that you did NOT modify is failing, the failure is pre-existing. Create an issue for it using the **create issue** operation (CLAUDE.md § Issue Tracker) if one doesn't already exist, and continue — do not silently work around it.
 
 ### 7. Docs
 
@@ -128,13 +129,13 @@ git commit -m "feat(scope): implement feature X
 - Key change 2
 - Key change 3
 
-Closes #11"
+SMART_CLOSE_SYNTAX"
 git push -u origin 11-feature-branch
 ```
 
 Commit message rules:
 - Use conventional commits format matching the issue title type
-- Include `Closes #NN` to auto-close the issue when merged
+- Include the smart close syntax (CLAUDE.md § Issue Tracker) to auto-close the issue when merged
 - List key changes in the body
 
 ### 9. PR
@@ -165,8 +166,10 @@ PR body:
 - [x] Tests added
 - [x] All tests pass locally
 
-Closes #11
+SMART_CLOSE_SYNTAX
 ```
+
+Use the smart close syntax from CLAUDE.md § Issue Tracker for the linked issue reference.
 
 ### 10. Close issue
 

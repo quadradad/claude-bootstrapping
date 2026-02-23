@@ -1,6 +1,6 @@
 ---
 name: close-issue
-description: Validate acceptance criteria and close a GitHub issue with a structured comment
+description: Validate acceptance criteria and close an issue with a structured comment
 user_invocable: true
 ---
 
@@ -19,9 +19,7 @@ The quality gate at the end of implementation. Validates that all acceptance cri
 
 ### 1. Fetch the issue
 
-```bash
-gh issue view NUMBER --json number,title,body,labels,milestone,assignees
-```
+Fetch the issue using the **view issue** operation (CLAUDE.md § Issue Tracker).
 
 Parse the issue body to extract:
 - Summary
@@ -68,9 +66,9 @@ If all criteria are PASS (with optional SKIPs), proceed to close.
 ### 4. Check off criteria on the issue
 
 Update the issue body to check off each passing criterion:
-1. Fetch current body: `gh issue view NUMBER --json body --jq '.body'`
+1. Fetch current body using the **view issue body** operation (CLAUDE.md § Issue Tracker)
 2. Replace `- [ ]` with `- [x]` for each criterion that passed
-3. Update: `gh issue edit NUMBER --body "UPDATED_BODY"`
+3. Update using the **edit issue body** operation (CLAUDE.md § Issue Tracker)
 
 This is best-effort — if it fails, log a warning and continue to close.
 
@@ -109,10 +107,8 @@ Build a structured comment for the issue:
 
 When called interactively, show the closing comment and ask for confirmation.
 When called autonomously (e.g., by `/wiggum`), proceed without confirmation:
-```bash
-gh issue comment NUMBER --body "CLOSING_COMMENT"
-gh issue close NUMBER
-```
+1. Post the comment using the **comment on issue** operation (CLAUDE.md § Issue Tracker)
+2. Close using the **close issue** operation (CLAUDE.md § Issue Tracker)
 
 ### 8. Downstream impact
 
@@ -121,16 +117,10 @@ After closing, check for downstream effects:
 **Unblocked issues:**
 - Find all open issues that had `- Blocked by: #NUMBER` in their body
 - For each, check if ALL their blockers are now closed
-- If fully unblocked, offer to remove the `blocked` label:
-  ```bash
-  gh issue edit MM --remove-label "blocked"
-  ```
+- If fully unblocked, offer to remove the `blocked` label using the **remove label** operation (CLAUDE.md § Issue Tracker)
 
 **Milestone tracking:**
-- If the closed issue belongs to a milestone, check milestone progress:
-  ```bash
-  gh api repos/{owner}/{repo}/milestones/{milestone_number}
-  ```
+- If the closed issue belongs to a milestone, check progress using the **check milestone progress** operation (CLAUDE.md § Issue Tracker)
 - Report: "Milestone 'v1.0': 5/12 issues closed (42%)"
 
 ### 9. Summary

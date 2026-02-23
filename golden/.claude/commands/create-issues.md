@@ -1,46 +1,43 @@
 ---
 name: create-issues
-description: Create GitHub issues from a plan discussed in conversation — with tracking epic, dependencies, and assignee resolution
+description: Create issues from a plan discussed in conversation — with tracking epic, dependencies, and assignee resolution
 user_invocable: true
 ---
 
 # /create-issues — Plan-to-Issues Pipeline
 
-Convert a plan discussed in conversation into a structured set of GitHub issues with a tracking epic, explicit dependencies, and proper sequencing.
+Convert a plan discussed in conversation into a structured set of issues with a tracking epic, explicit dependencies, and proper sequencing.
 
 ## Invocation
 
 ```
 /create-issues                  # No assignee — issues created unassigned
-/create-issues me               # Assign to the authenticated GitHub user
-/create-issues ben              # Resolve "ben" to a GitHub collaborator username
-/create-issues bnsmcx           # Exact GitHub username also works
+/create-issues me               # Assign to the authenticated user
+/create-issues ben              # Resolve "ben" to a collaborator username
+/create-issues bnsmcx           # Exact username also works
 ```
 
-The argument is always an **assignee** — a conversational name, GitHub username, or `me`.
+The argument is always an **assignee** — a conversational name, username, or `me`.
 
 ## Step 0. Resolve Assignee
 
 If an assignee argument was provided:
 
-1. **`me`** — Run `gh api user --jq '.login'` to get the authenticated user's login. Use that.
+1. **`me`** — Resolve using the **resolve current user** operation (CLAUDE.md § Issue Tracker). Use the returned login.
 
-2. **Any other name** — Resolve to a GitHub username:
-   a. Fetch collaborators:
-      ```bash
-      gh api repos/{owner}/{repo}/collaborators --jq '.[] | {login, name: .name // .login}'
-      ```
+2. **Any other name** — Resolve to a username:
+   a. Fetch collaborators using the **list collaborators** operation (CLAUDE.md § Issue Tracker)
    b. Try to match the argument (case-insensitive) against:
       - Exact `login` match
       - Partial `login` match (argument is a prefix or substring)
       - Display `name` match (first name, last name, or full name)
    c. If exactly one match — use it
    d. If multiple matches — present the options and ask the user to pick
-   e. If no match — ask the user: "I couldn't find a collaborator matching '{name}'. What's their GitHub username?"
+   e. If no match — ask the user: "I couldn't find a collaborator matching '{name}'. What's their username?"
 
 3. **No argument** — Leave issues unassigned.
 
-Store the resolved GitHub username as `$ASSIGNEE` for use in Step 7.
+Store the resolved username as `$ASSIGNEE` for use in Step 7.
 
 ## Step 1. Extract Plan from Conversation
 
@@ -59,9 +56,7 @@ If no plan is found in conversation, ask: "I don't see a plan in our conversatio
 
 ## Step 2. Survey Existing Issues
 
-```bash
-gh issue list --state open --limit 200 --json number,title,body,labels
-```
+Fetch all open issues using the **list open issues** operation (CLAUDE.md § Issue Tracker).
 
 Build a set of existing issue titles and key terms to detect potential duplicates.
 
@@ -175,26 +170,17 @@ Ask: "Create these N issues (1 epic + N-1 implementation issues)? You can ask to
 
 Create in dependency order (blockers first, then dependents). The tracking epic is created **first** so child issues can reference it.
 
-For the epic:
-```bash
-gh issue create --title "TITLE" --body "BODY" --label "tracking" [--assignee "$ASSIGNEE"]
-```
+For the epic, use the **create issue** operation (CLAUDE.md § Issue Tracker) with the `tracking` label and optional `$ASSIGNEE`.
 
-For each child issue:
-```bash
-gh issue create --title "TITLE" --body "BODY" --label "label1" --label "label2" [--assignee "$ASSIGNEE"]
-```
+For each child issue, use the **create issue** operation with appropriate labels and optional `$ASSIGNEE`.
 
 After each creation:
-- Note the real issue number assigned by GitHub
-- Update subsequent issue bodies: replace batch IDs (`new-1`) with real `#NN`
+- Note the real issue number assigned by the tracker
+- Update subsequent issue bodies: replace batch IDs (`new-1`) with real issue references
 - Update the epic's issue table with real `#NN` references
 - Apply `blocked` label to issues whose dependencies are still open
 
-After all child issues are created, **edit the epic** to fill in the real issue numbers:
-```bash
-gh issue edit $EPIC_NUMBER --body "UPDATED_BODY_WITH_REAL_NUMBERS"
-```
+After all child issues are created, **edit the epic** to fill in the real issue numbers using the **edit issue body** operation (CLAUDE.md § Issue Tracker).
 
 ## Step 8. Post-Creation Validation
 

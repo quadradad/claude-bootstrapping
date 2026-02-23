@@ -11,14 +11,14 @@
   3. Implement the production code
   4. Run tests — confirm all tests pass (green)
   5. Refactor if needed
-- **Issue-Driven Workflow:** All work is tracked via GitHub Issues. Never create tracking markdown files in the repository — use Issues, milestones, and project boards instead.
+- **Issue-Driven Workflow:** All work is tracked via the project's issue tracker. Never create tracking markdown files in the repository — use issues, milestones, and project boards instead.
 - **Validate Before Claiming Completion:** Always run the project's validation command before committing, closing issues, or claiming work is done. Never skip validation.
 - **YAGNI:** Don't over-engineer. Only build what's needed now. Three similar lines of code is better than a premature abstraction.
 - **DRY within reason:** Avoid duplication, but don't create abstractions for one-time operations.
 
 ## Issue Management
 
-All work is tracked via GitHub Issues with structured metadata.
+All work is tracked via the project's issue tracker with structured metadata.
 
 **Issue format:**
 ```
@@ -50,7 +50,38 @@ Scopes: defined per-project (see Project-Specific Configuration below)
 ```
 - Blocked by: #NN — reason
 ```
-Other patterns (`depends on`, `waiting on`, `after #NN`) are NOT recognized by automation.
+`#NN` uses the configured issue reference format (see Issue Tracker section). Other patterns (`depends on`, `waiting on`, `after #NN`) are NOT recognized by automation.
+
+## Issue Tracker
+
+> Configured by `/bootstrap-claude`. Default: GitHub Issues (`gh` CLI).
+> To use a different tracker (Jira, Linear, etc.), update this section
+> and the corresponding permissions in settings.local.json.
+
+**Tool:** GitHub CLI (`gh`)
+**Issue reference format:** `#NN` (e.g., `#53`)
+**Smart close syntax:** `Closes #NN`
+**Dependency format:** `- Blocked by: #NN — reason`
+
+### Operations Reference
+
+| Operation | Command |
+|-----------|---------|
+| List open issues | `gh issue list --state open --limit 200 --json number,title,body,labels,milestone,assignees` |
+| View issue | `gh issue view NUMBER --json number,title,body,labels,milestone,assignees` |
+| View issue body | `gh issue view NUMBER --json body --jq '.body'` |
+| Create issue | `gh issue create --title "TITLE" --body "BODY" --label "LABEL" [--assignee "USER"]` |
+| Edit issue body | `gh issue edit NUMBER --body "BODY"` |
+| Close issue | `gh issue close NUMBER` |
+| Comment on issue | `gh issue comment NUMBER --body "COMMENT"` |
+| Add label | `gh issue edit NUMBER --add-label "LABEL"` |
+| Remove label | `gh issue edit NUMBER --remove-label "LABEL"` |
+| Assign to milestone | `gh issue edit NUMBER --milestone "NAME"` |
+| Create milestone | `gh api repos/{owner}/{repo}/milestones --method POST -f title="NAME" -f state="open"` |
+| List milestones | `gh api repos/{owner}/{repo}/milestones` |
+| Check milestone progress | `gh api repos/{owner}/{repo}/milestones/{number}` |
+| Resolve current user | `gh api user --jq '.login'` |
+| List collaborators | `gh api repos/{owner}/{repo}/collaborators --jq '.[].login'` |
 
 ## Commit Conventions
 
@@ -65,14 +96,14 @@ Closes #NN
 ```
 
 - Types: `feat`, `fix`, `refactor`, `docs`, `discovery`, `design`, `infra`
-- Include `Closes #NN` to auto-close the linked issue when merged
+- Include the smart close syntax (see Issue Tracker section) to auto-close the linked issue when merged
 - List key changes in the body
 - Never force-push or rewrite history on shared branches
 
 ## PR Workflow
 
 - Every change gets a pull request
-- PRs link to issues via `Closes #NN` in the body
+- PRs link to issues via the smart close syntax (see Issue Tracker section) in the body
 - Feature branches target the release branch (if one exists), otherwise `main`
 - Branch naming: `{issue-number}-{slug}` (e.g., `53-add-auth-service`)
 - Use `/review-pr` before merging
@@ -84,7 +115,7 @@ Closes #NN
 |---------|---------|
 | `/wiggum` | Automated dev loop — pick next unblocked issue, implement, test, close, repeat |
 | `/triage` | Analyze backlog — dependency graph, readiness, label validation |
-| `/create-issues` | Convert a plan into structured GitHub issues with tracking epic |
+| `/create-issues` | Convert a plan into structured issues with tracking epic |
 | `/close-issue` | Validate acceptance criteria and close an issue with structured comment |
 | `/review-pr` | Standardized PR review against project quality standards |
 | `/setup-release` | Plan a release — milestone, branch, implementation order |
@@ -101,7 +132,7 @@ Closes #NN
 
 ## Pre-existing Failures
 
-If a test file you did NOT modify is failing, the failure is pre-existing. Create a GitHub issue for it (if one doesn't already exist) and continue — do not silently work around it.
+If a test file you did NOT modify is failing, the failure is pre-existing. Create an issue for it (if one doesn't already exist) using the **create issue** operation (CLAUDE.md § Issue Tracker) and continue — do not silently work around it.
 
 <!-- bootstrap-claude: project-specific below -->
 <!-- Everything below this line is generated by /bootstrap-claude for this specific project -->

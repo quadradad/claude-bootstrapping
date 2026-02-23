@@ -1,20 +1,18 @@
 ---
 name: triage
-description: Analyze the GitHub issue backlog — dependency graph, readiness, label validation, and prioritization
+description: Analyze the issue backlog — dependency graph, readiness, label validation, and prioritization
 user_invocable: true
 ---
 
 # /triage — Backlog Analysis
 
-Analyze all open GitHub issues, build a dependency graph, and produce an actionable summary.
+Analyze all open issues, build a dependency graph, and produce an actionable summary.
 
 ## Steps
 
 ### 1. Fetch all open issues
 
-```bash
-gh issue list --state open --limit 200 --json number,title,body,labels,milestone,assignees
-```
+Fetch all open issues using the **list open issues** operation (CLAUDE.md § Issue Tracker).
 
 Store the full result for processing.
 
@@ -27,7 +25,7 @@ Scan each issue body for the **canonical** dependency format:
 ```
 
 Rules:
-- Only recognize lines matching `- Blocked by: #\d+` (with or without the ` — reason` suffix)
+- Only recognize lines matching the canonical dependency format using the configured issue reference pattern (with or without the ` — reason` suffix)
 - Do NOT parse other patterns like "Blocked by: #NN" without the list prefix, "depends on #NN", "waiting on #NN", etc.
 - Build an adjacency list: `blockGraph[NN] = [list of issues NN blocks]`
 - Build the reverse: `blockedBy[NN] = [list of issues blocking NN]`
@@ -106,11 +104,7 @@ Present a structured report:
 If label inconsistencies were found, ask the user:
 > "Found N label issues. Apply fixes? (This will add/remove `blocked` labels as needed)"
 
-If confirmed, apply fixes:
-```bash
-gh issue edit NN --add-label "blocked"
-gh issue edit NN --remove-label "blocked"
-```
+If confirmed, apply fixes using the **add label** and **remove label** operations (CLAUDE.md § Issue Tracker).
 
 ## Notes
 

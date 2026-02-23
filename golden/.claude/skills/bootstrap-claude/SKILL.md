@@ -102,6 +102,15 @@ Identify the primary abstraction and architecture pattern:
 - **CLI tool:** bin/ or cli/ with argument parsing
 - **Desktop app:** Electron, Tauri indicators
 
+### Issue Tracker Detection
+
+| Signal | Indicates |
+|--------|-----------|
+| `.github/` + `gh` available | GitHub Issues (default) |
+| `.jira.d/`, `JIRA_*` env vars | Jira |
+| `.linear` config | Linear |
+| `.gitlab-ci.yml`, `GITLAB_*` env vars | GitLab Issues |
+
 ### Git State
 
 - Is this a git repo? (`git rev-parse --is-inside-work-tree`)
@@ -169,6 +178,20 @@ Suggest scopes based on detected architecture:
 - Simple project: suggest omitting scopes
 
 Let the user adjust.
+
+### Question 5: Issue Tracker
+
+If a non-GitHub tracker was detected in Phase 1, ask:
+
+**"What issue tracker does this project use?"**
+
+Options:
+- **GitHub Issues** (default) — uses `gh` CLI
+- **Jira** — uses `jira` CLI or REST API
+- **Linear** — uses `linear` CLI or GraphQL API
+- **GitLab Issues** — uses `glab` CLI
+
+If no non-GitHub tracker was detected, default silently to GitHub Issues without asking.
 
 ## Phase 3: Adapt
 
@@ -399,7 +422,7 @@ When Claude creates or updates documentation:
 - Include file paths relative to project root
 - Include runnable commands with expected outputs
 - Update cross-references when renaming or moving content
-- Never create tracking/planning documents here — use GitHub Issues instead
+- Never create tracking/planning documents here — use the project's issue tracker instead
 
 ## Structure
 
@@ -408,6 +431,33 @@ When Claude creates or updates documentation:
 | `README.md` | This file — documentation conventions |
 | [Add more as the project grows] |
 ```
+
+### 3.9 Configure Issue Tracker
+
+Fill in the CLAUDE.md Issue Tracker section based on the detected (or user-selected) tracker:
+
+**For GitHub Issues (default):** No changes needed — the baseline CLAUDE.md already has GitHub CLI commands.
+
+**For Jira:**
+- **Tool:** Jira CLI (`jira`) or REST API
+- **Issue reference format:** `PROJ-NN` (e.g., `PROJ-53`)
+- **Smart close syntax:** Jira smart commits (e.g., `PROJ-53 #close`)
+- Update the Operations Reference table with Jira CLI equivalents
+- Add `Bash(jira:*)` to settings.local.json permissions
+
+**For Linear:**
+- **Tool:** Linear CLI (`linear`) or GraphQL API
+- **Issue reference format:** `TEAM-NN` (e.g., `ENG-53`)
+- **Smart close syntax:** `Fixes TEAM-NN`
+- Update the Operations Reference table with Linear CLI equivalents
+- Add `Bash(linear:*)` to settings.local.json permissions
+
+**For GitLab Issues:**
+- **Tool:** GitLab CLI (`glab`)
+- **Issue reference format:** `#NN` (same as GitHub)
+- **Smart close syntax:** `Closes #NN`
+- Update the Operations Reference table with `glab` CLI equivalents
+- Add `Bash(glab:*)` to settings.local.json permissions
 
 ## Phase 4: Summary
 

@@ -33,7 +33,7 @@ gh pr diff NUMBER
 Check:
 - [ ] **Title** follows conventional format: `type(scope): description` or is descriptive
 - [ ] **Description** is filled in (not just template boilerplate)
-- [ ] **Linked issue** exists (`Closes #NN` or `Fixes #NN` in body) — WARN if missing, not FAIL
+- [ ] **Linked issue** exists (smart close syntax from CLAUDE.md § Issue Tracker in body) — WARN if missing, not FAIL
 - [ ] **Base branch** is correct (release branch if one exists, otherwise `main`)
 
 ### 2. Architecture Compliance

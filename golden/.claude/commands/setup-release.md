@@ -6,7 +6,7 @@ user_invocable: true
 
 # /setup-release — Release Planning
 
-Scope a release by filtering issues, creating a GitHub milestone, setting up a release branch, and producing a phased implementation plan.
+Scope a release by filtering issues, creating a milestone, setting up a release branch, and producing a phased implementation plan.
 
 ## Invocation
 
@@ -22,7 +22,7 @@ Scope a release by filtering issues, creating a GitHub milestone, setting up a r
 ### 1. Parse input
 
 Extract filters from user input:
-- **Label filters**: map keywords to GitHub labels. Common mappings:
+- **Label filters**: map keywords to issue labels. Common mappings:
   - `bugs` / `bug` — `bug`
   - `features` / `feat` — `enhancement`
   - `docs` — `documentation`
@@ -32,14 +32,9 @@ Extract filters from user input:
 
 ### 2. Query matching issues
 
-```bash
-gh issue list --state open --label "LABEL1" --label "LABEL2" --limit 200 --json number,title,body,labels,milestone
-```
+Fetch matching issues using the **list open issues** operation (CLAUDE.md § Issue Tracker), filtering by the relevant labels.
 
-If an issue range was specified, also fetch those:
-```bash
-gh issue view NN --json number,title,body,labels,milestone
-```
+If an issue range was specified, also fetch those individually using the **view issue** operation (CLAUDE.md § Issue Tracker).
 
 Combine results, deduplicate by issue number.
 
@@ -73,14 +68,9 @@ Generate the milestone name: `v{version}` or `release/YYYY-MM-{scope}`
 - scope = primary label filter (e.g., `bugs`, `features`, `full`)
 - Example: `v1.0` or `release/2026-03-full`
 
-```bash
-gh api repos/{owner}/{repo}/milestones --method POST -f title="v1.0" -f state="open" -f description="v1.0 MVP release"
-```
+Create using the **create milestone** operation (CLAUDE.md § Issue Tracker).
 
-Assign all release issues to the milestone:
-```bash
-gh issue edit NN --milestone "v1.0"
-```
+Assign all release issues to the milestone using the **assign to milestone** operation (CLAUDE.md § Issue Tracker).
 
 ### 6. Generate implementation order
 
@@ -168,7 +158,7 @@ Next step: Run /wiggum to start implementing. Track progress on PR #30.
 
 ## Rules
 
-- NEVER create a milestone that already exists — check first with `gh api repos/{owner}/{repo}/milestones`
+- NEVER create a milestone that already exists — check first using the **list milestones** operation (CLAUDE.md § Issue Tracker)
 - NEVER force-push the release branch
 - ALWAYS ask user confirmation before creating the milestone and branch
 - External blockers must be resolved (included, pre-completed, or dependents excluded) before proceeding
