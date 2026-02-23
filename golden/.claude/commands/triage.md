@@ -1,0 +1,119 @@
+---
+name: triage
+description: Analyze the GitHub issue backlog — dependency graph, readiness, label validation, and prioritization
+user_invocable: true
+---
+
+# /triage — Backlog Analysis
+
+Analyze all open GitHub issues, build a dependency graph, and produce an actionable summary.
+
+## Steps
+
+### 1. Fetch all open issues
+
+```bash
+gh issue list --state open --limit 200 --json number,title,body,labels,milestone,assignees
+```
+
+Store the full result for processing.
+
+### 2. Parse dependency references
+
+Scan each issue body for the **canonical** dependency format:
+
+```
+- Blocked by: #NN — reason
+```
+
+Rules:
+- Only recognize lines matching `- Blocked by: #\d+` (with or without the ` — reason` suffix)
+- Do NOT parse other patterns like "Blocked by: #NN" without the list prefix, "depends on #NN", "waiting on #NN", etc.
+- Build an adjacency list: `blockGraph[NN] = [list of issues NN blocks]`
+- Build the reverse: `blockedBy[NN] = [list of issues blocking NN]`
+
+### 3. Build dependency graph and detect cycles
+
+Perform a topological sort on the dependency graph:
+- If the sort succeeds, store the ordering
+- If it fails, identify and report the cycle(s) — list the issue numbers involved
+
+### 4. Classify issues
+
+For each open issue, determine:
+- **Ready**: No open blockers (all `blockedBy` issues are closed)
+- **Blocked**: Has at least one open blocker
+- **Impact score**: Count how many issues (transitively) depend on this one — higher = more impactful to complete
+
+### 5. Validate labels
+
+Check each issue for consistency:
+- Issues with `blocked` label but NO open blockers — flag as "stale blocked label"
+- Issues WITHOUT `blocked` label but WITH open blockers — flag as "missing blocked label"
+- Issues missing acceptance criteria (no `- [ ]` checkboxes in body)
+- Issues using non-standard dependency formats (anything that looks like a dependency reference but doesn't match the canonical format)
+
+### 6. Group by category
+
+Group ready issues by project labels and title scopes. If the project defines layers or scopes in CLAUDE.md, use those. Otherwise fall back to these default categories:
+- **Feature** (`enhancement` label or title contains `feat(`)
+- **Bug** (`bug` label or title contains `fix(`)
+- **Documentation** (`documentation` label or title contains `docs`)
+- **Infrastructure** (`infra` label or title contains `infra(`)
+- **Discovery/Design** (`discovery` or `design` label)
+- **Tracking** (`tracking` label)
+- **Cross-cutting** (none of the above)
+
+### 7. Output summary
+
+Present a structured report:
+
+```
+## Backlog Triage Summary
+
+**Total open:** NN | **Ready:** NN | **Blocked:** NN | **Missing criteria:** NN
+
+### Highest-Impact Issues (unblock the most work)
+| # | Title | Impact | Labels |
+|---|-------|--------|--------|
+| ... |
+
+### Ready Issues by Category
+#### Feature (N ready)
+- #NN — title
+#### Bug (N ready)
+- #NN — title
+#### Infrastructure (N ready)
+- #NN — title
+[...etc]
+
+### Blocked Issues
+| # | Title | Blocked by |
+|---|-------|------------|
+| ... |
+
+### Label Issues
+- #NN: has `blocked` label but all blockers are closed
+- #NN: missing `blocked` label (blocked by #MM which is open)
+- #NN: missing acceptance criteria
+
+### Dependency Cycles (if any)
+- Cycle: #A -> #B -> #C -> #A
+```
+
+### 8. Offer label fixes (optional)
+
+If label inconsistencies were found, ask the user:
+> "Found N label issues. Apply fixes? (This will add/remove `blocked` labels as needed)"
+
+If confirmed, apply fixes:
+```bash
+gh issue edit NN --add-label "blocked"
+gh issue edit NN --remove-label "blocked"
+```
+
+## Notes
+
+- This skill is **read-only by default** — it only modifies labels if the user explicitly confirms
+- Other skills (`/create-issues`, `/setup-release`, `/wiggum`) reuse the dependency graph logic from this skill
+- The canonical dependency format (`- Blocked by: #NN — reason`) is the only recognized format
