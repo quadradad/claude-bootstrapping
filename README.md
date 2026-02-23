@@ -106,6 +106,32 @@ It does **not** modify any configuration — that's what `/bootstrap-claude` is 
 3. **Adapt** — Appends project-specific config to CLAUDE.md, adds tool permissions, creates project-specific skills (e.g., `add-endpoint` for APIs, `add-component` for React), augments the code reviewer, configures formatter hooks, and sets up the issue tracker
 4. **Summary** — Reports everything that was configured and suggests next steps
 
+## Reference Workflow
+
+These commands were built to support a specific development loop. Here's the workflow they were designed around — adapt it however you like.
+
+### 1. Plan
+
+For larger features, hand Claude a markdown file with requirements. For smaller work, just describe what you need and ask it to put together a plan. Either way, you end up with a conversation where the scope, approach, and sequencing are agreed on before any code is written.
+
+### 2. Break it down
+
+Once the plan looks right, run `/create-issues`. Claude converts the plan into a structured set of issues — a tracking epic, individual tasks with acceptance criteria, a dependency graph, labels, and a sequenced implementation order. Everything lands in your issue tracker ready to execute.
+
+### 3. Let it work
+
+Run `/wiggum` on the tracking issue and watch it go. It picks up tasks in dependency order, creates a feature branch, writes tests first, implements, runs validation, fixes what breaks, expands test coverage — then opens a PR, merges it back into the working branch, and moves to the next task. This continues autonomously until the milestone is complete.
+
+### 4. Review
+
+When the work is done, create a PR to your main branch and run `/review-pr`. It performs a structured seven-section review: architecture compliance, code quality, test coverage, security, and more.
+
+### 5. Iterate
+
+If the review surfaces issues, tell Claude to create issues for the findings, then run `/wiggum` on the new tracking issue. Same loop, same discipline — the review feedback gets the same structured treatment as the original feature work.
+
+This cycle — plan, break down, execute, review, iterate — is the core loop. The commands handle the mechanical parts so you can focus on requirements and review.
+
 ## Customization
 
 The golden set is designed to be forked and modified:
