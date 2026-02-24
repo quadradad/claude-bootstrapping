@@ -40,10 +40,8 @@ golden/
     │   ├── create-issues.md           # Plan-to-issues pipeline
     │   ├── close-issue.md             # Issue validation & closure
     │   ├── setup-release.md           # Release planning & milestone setup
-    │   └── review-pr.md              # Standardized PR review
-    └── skills/
-        └── bootstrap-claude/
-            └── SKILL.md               # Project adapter skill
+    │   ├── review-pr.md              # Standardized PR review
+    │   └── bootstrap-claude.md       # Project adapter command
 ```
 
 ### CLAUDE.md
@@ -106,7 +104,7 @@ It does **not** modify any configuration — that's what `/bootstrap-claude` is 
 
 1. **Discovery** — Scans for package manifests, framework configs, build tools, CI/CD, documentation, project structure, issue tracker signals, and git state
 2. **Confirm** — Presents findings and asks targeted questions: profile accuracy, git integration strategy, documentation scaffold, issue scopes, tracker selection, and task tracking mode (external tracker vs in-repo `tasks/todo.md`)
-3. **Adapt** — Appends project-specific config to CLAUDE.md, adds tool permissions, creates project-specific skills (e.g., `add-endpoint` for APIs, `add-component` for React), augments the code reviewer, configures formatter hooks, and sets up the issue tracker
+3. **Adapt** — Appends project-specific config to CLAUDE.md, adds tool permissions, creates project-specific commands (e.g., `/add-endpoint` for APIs, `/add-component` for React), augments the code reviewer, configures formatter hooks, and sets up the issue tracker
 4. **Summary** — Reports everything that was configured and suggests next steps
 
 ## Reference Workflow
@@ -142,7 +140,6 @@ This cycle — plan, break down, execute, review, iterate — is the core loop. 
 The golden set is designed to be forked and modified:
 
 - **Add commands** — Drop new `.md` files in `golden/.claude/commands/`
-- **Add skills** — Create new directories in `golden/.claude/skills/`
 - **Adjust conventions** — Edit the baseline sections of `golden/CLAUDE.md`
 - **Change defaults** — Modify `golden/.claude/settings.local.json` for different baseline permissions
 

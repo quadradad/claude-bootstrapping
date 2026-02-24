@@ -120,7 +120,7 @@ Identify the primary abstraction and architecture pattern:
 ### Existing Claude Config
 
 - Does `CLAUDE.md` already have content below the bootstrap marker?
-- Are there existing project-specific skills in `.claude/skills/`?
+- Are there existing project-specific commands in `.claude/commands/`?
 - This indicates a re-bootstrap — warn the user before overwriting.
 
 ## Phase 2: Confirm with User
@@ -273,12 +273,12 @@ Read the existing `settings.local.json` and add project-specific permissions. De
 
 Merge new permissions into the existing `allow` array — don't overwrite the baseline.
 
-### 3.3 Create Project-Specific Skills
+### 3.3 Create Project-Specific Commands
 
-Based on the detected primary abstraction, create appropriate skills in `.claude/skills/`:
+Based on the detected primary abstraction, create appropriate commands in `.claude/commands/`:
 
 **For API projects (Go, Node/Express, Python/FastAPI, etc.):**
-Create `.claude/skills/add-endpoint/SKILL.md` — workflow for adding a new API endpoint:
+Create `.claude/commands/add-endpoint.md` — workflow for adding a new API endpoint:
 1. Define the route/endpoint
 2. Add database query if needed (and run code generation if applicable)
 3. Implement the handler
@@ -287,7 +287,7 @@ Create `.claude/skills/add-endpoint/SKILL.md` — workflow for adding a new API 
 6. Write tests
 
 **For React/frontend projects:**
-Create `.claude/skills/add-component/SKILL.md` — workflow for adding a new component:
+Create `.claude/commands/add-component.md` — workflow for adding a new component:
 1. Determine file location by feature area
 2. Define props interface/types
 3. Identify data sources
@@ -296,7 +296,7 @@ Create `.claude/skills/add-component/SKILL.md` — workflow for adding a new com
 6. Write tests
 
 **For pipeline/data processing projects:**
-Create `.claude/skills/add-pipeline-step/SKILL.md` — workflow for adding a new processing stage:
+Create `.claude/commands/add-pipeline-step.md` — workflow for adding a new processing stage:
 1. Define CLI interface
 2. Define input/output contracts
 3. Implement core logic
@@ -305,7 +305,7 @@ Create `.claude/skills/add-pipeline-step/SKILL.md` — workflow for adding a new
 6. Write tests
 
 **For all projects with docs/:**
-Create `.claude/skills/update-docs/SKILL.md` — documentation audit:
+Create `.claude/commands/update-docs.md` — documentation audit:
 1. Inventory all .md files
 2. Verify file path references exist
 3. Verify technical references match code
@@ -313,7 +313,7 @@ Create `.claude/skills/update-docs/SKILL.md` — documentation audit:
 5. Apply fixes
 6. Report results
 
-Customize each skill with the project's actual file paths, naming conventions, and patterns discovered in Phase 1.
+Customize each command with the project's actual file paths, naming conventions, and patterns discovered in Phase 1.
 
 ### 3.4 Augment Code Reviewer
 
