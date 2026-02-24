@@ -64,8 +64,10 @@ echo "Deploying golden set to $TARGET..."
 cp "$GOLDEN_DIR/CLAUDE.md" "$TARGET/CLAUDE.md"
 
 # Copy .claude/ directory (merge, don't delete existing)
+# Note: macOS cp -R nests the source dir inside the target when both exist.
+# rsync with trailing slashes correctly merges contents.
 mkdir -p "$TARGET/.claude"
-cp -R "$GOLDEN_DIR/.claude/" "$TARGET/.claude/"
+rsync -a "$GOLDEN_DIR/.claude/" "$TARGET/.claude/"
 
 # Copy .mcp.json
 cp "$GOLDEN_DIR/.mcp.json" "$TARGET/.mcp.json"
