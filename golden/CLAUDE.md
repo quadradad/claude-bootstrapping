@@ -11,14 +11,47 @@
   3. Implement the production code
   4. Run tests — confirm all tests pass (green)
   5. Refactor if needed
-- **Issue-Driven Workflow:** All work is tracked via the project's issue tracker. Never create tracking markdown files in the repository — use issues, milestones, and project boards instead.
+- **Issue-Driven Workflow:** All work is tracked via the project's task tracker. Default: external issue tracker (see Issue Tracker section). Can be configured to use `tasks/todo.md` via `/bootstrap-claude`.
 - **Validate Before Claiming Completion:** Always run the project's validation command before committing, closing issues, or claiming work is done. Never skip validation.
 - **YAGNI:** Don't over-engineer. Only build what's needed now. Three similar lines of code is better than a premature abstraction.
 - **DRY within reason:** Avoid duplication, but don't create abstractions for one-time operations.
+- **Plan Before Building:** Enter plan mode for any task with 3+ steps or that involves architectural decisions. Write detailed specs upfront. If implementation hits unexpected complexity or repeated failures, stop and re-plan rather than pushing through.
+- **Challenge Your Work:** For non-trivial changes, pause and ask "is there a more elegant way?" before presenting. Skip for simple, obvious fixes. This is about implementation quality within scope, not scope expansion.
+- **Fix Bugs Autonomously:** When given a bug report with logs, errors, or failing tests, diagnose and resolve directly. Don't ask for hand-holding — read the evidence and fix it. Zero context switches required from the user.
+
+## Subagent Strategy
+
+- Use subagents to keep the main context window clean
+- Offload research, exploration, and parallel analysis to subagents
+- One focused task per subagent — don't overload
+- For complex problems, use multiple subagents rather than serial deep-dives
+- Subagent results feed back into the main thread as summarized findings
+
+## Session Start
+
+At the beginning of a fresh session on an existing project:
+1. Review `.claude/lessons.md` for patterns relevant to the current work
+2. Assess current state: run `/triage` or check the task tracking file
+3. Decide next action: continue interrupted work, pick up the next unblocked task, or plan new work
+
+## Continuous Improvement
+
+Maintain `.claude/lessons.md` with patterns learned from corrections and reviews.
+
+**When to update:**
+- After ANY user correction — capture what went wrong and the better approach
+- After `/review-pr` finds issues you introduced — reflect on why (see /review-pr § Self-Improvement)
+- Ruthlessly deduplicate — update existing entries rather than adding redundant ones
+
+**Format:**
+### [Pattern name]
+- **Wrong:** [what was done incorrectly]
+- **Right:** [the correct approach]
+- **Why:** [root cause or reasoning]
 
 ## Issue Management
 
-All work is tracked via the project's issue tracker with structured metadata.
+All work is tracked via the project's task tracker with structured metadata.
 
 **Issue format:**
 ```

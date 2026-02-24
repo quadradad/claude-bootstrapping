@@ -8,6 +8,10 @@ user_invocable: true
 
 Scope a release by filtering issues, creating a milestone, setting up a release branch, and producing a phased implementation plan.
 
+## Task Tracking Mode
+
+This command is **not applicable** in todo.md mode. It requires milestone support, which is only available with external issue trackers. Use `/wiggum` directly to work through the Active task list.
+
 ## Invocation
 
 ```

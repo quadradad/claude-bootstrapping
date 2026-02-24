@@ -176,6 +176,17 @@ For APPROVE with no issues:
 gh pr review NUMBER --approve --body "REVIEW_BODY"
 ```
 
+### 8. Self-Improvement Reflection
+
+If the verdict is REQUEST_CHANGES or there are 2+ significant WARNs:
+
+1. Identify which findings stem from patterns Claude introduced in the reviewed code
+2. For each, reflect on WHY — knowledge gap, missed convention, over-engineering, or something else?
+3. Update `.claude/lessons.md` following the format in CLAUDE.md § Continuous Improvement
+4. If the reviewed PR was not authored by Claude, skip this step
+
+This creates a feedback loop: review finds problems → lessons captured → future work avoids them.
+
 ## Rules
 
 - NEVER approve a PR that has FAIL findings

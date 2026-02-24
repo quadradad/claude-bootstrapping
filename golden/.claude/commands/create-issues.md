@@ -8,6 +8,15 @@ user_invocable: true
 
 Convert a plan discussed in conversation into a structured set of issues with a tracking epic, explicit dependencies, and proper sequencing.
 
+## Task Tracking Mode
+
+When the project uses `tasks/todo.md` (see CLAUDE.md § Task Tracker):
+- **Step 0:** Skip assignee resolution — assignees are not available in todo.md mode
+- **Steps 1-5:** Same planning and validation logic
+- **Step 6:** Present the same review table, using `T-NN` IDs instead of `#NN`
+- **Step 7:** Add rows to the Active table in `tasks/todo.md` with auto-incremented `T-NN` IDs. No labels.
+- **Step 8:** Validate by re-reading the file
+
 ## Invocation
 
 ```

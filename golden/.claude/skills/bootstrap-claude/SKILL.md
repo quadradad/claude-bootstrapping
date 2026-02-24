@@ -193,6 +193,16 @@ Options:
 
 If no non-GitHub tracker was detected, default silently to GitHub Issues without asking.
 
+### Question 6: Task Tracking Mode
+
+Always ask this question:
+
+**"How should this project track tasks?"**
+
+Options:
+- **External issue tracker** (default) — Full workflow command support with the tracker configured above.
+- **In-repo task file** (`tasks/todo.md`) — Lightweight tracking for solo projects or when an external tracker is managed elsewhere. Labels, milestones, and assignees are not available.
+
 ## Phase 3: Adapt
 
 Based on discovery + user answers, make the following changes:
@@ -459,6 +469,44 @@ Fill in the CLAUDE.md Issue Tracker section based on the detected (or user-selec
 - Update the Operations Reference table with `glab` CLI equivalents
 - Add `Bash(glab:*)` to settings.local.json permissions
 
+### 3.10 Configure Task Tracking Mode
+
+If the user selected **in-repo task file** in Question 6:
+
+**Create `tasks/todo.md`** with the standard template:
+
+```markdown
+# Tasks
+
+## Active
+
+| ID | Type | Title | Status | Blocked by |
+|----|------|-------|--------|------------|
+
+## Done
+
+| ID | Type | Title | Completed |
+|----|------|-------|-----------|
+```
+
+**Modify CLAUDE.md:**
+- Issue-Driven Workflow bullet → reference `tasks/todo.md` instead of external tracker
+- Issue Management header → "All work is tracked in `tasks/todo.md`"
+- Replace Issue Tracker section with a Task Tracker section:
+  - Task reference format: `T-NN`
+  - Commit reference: `Completes T-NN`
+  - Dependency format: `- Blocked by: T-NN — reason`
+  - Operations Reference table with file read/write operations instead of CLI commands
+- Commit Conventions: `Closes #NN` → `Completes T-NN`
+
+**Create `.claude/lessons.md`** with an empty template (this is created regardless of tracking mode):
+
+```markdown
+# Lessons Learned
+
+Patterns learned from corrections and reviews. See CLAUDE.md § Continuous Improvement.
+```
+
 ## Phase 4: Summary
 
 After all changes, present a summary:
@@ -500,6 +548,7 @@ After all changes, present a summary:
 - [ ] Project-specific skills created
 - [ ] Code reviewer augmented
 - [ ] Hooks configured for formatters/linters
+- [ ] Task tracking mode selected and configured
 - [ ] Summary presented to user
 
 ## Rules

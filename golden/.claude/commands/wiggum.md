@@ -16,6 +16,18 @@ The orchestrator. Picks up issues in dependency order and implements them contin
 /wiggum 53                     # Start with a specific issue
 ```
 
+## Task Tracking Mode
+
+When the project uses `tasks/todo.md` (see CLAUDE.md § Task Tracker):
+- **Step 1 (Context):** Read `tasks/todo.md` Active table instead of querying milestones. Skip release PR discovery.
+- **Step 2 (Select):** Pick the highest-impact unblocked task from the Active table
+- **Step 3 (Branch):** Use `T-NN-slug` branch naming (e.g., `T-3-add-auth`)
+- **Step 8 (Commit):** Use `Completes T-NN` instead of the smart close syntax
+- **Step 9 (PR):** Target `main` (no release branch in todo.md mode)
+- **Step 10 (Close):** Run `/close-issue T-NN` to move the task to Done
+- **Step 11 (Merge):** Skip release PR checklist update
+- **Release Completion:** Not applicable — loop ends when the Active table is empty
+
 ## Loop
 
 Each iteration follows this sequence:
@@ -106,8 +118,12 @@ This runs the project's linting, type-checking, and all tests.
 **Retry logic:**
 - If validation fails, analyze the error and fix
 - Re-run after each fix
-- Maximum 3 retry cycles
-- If still failing after 3 retries, revert the branch changes, log the failure as a comment on the issue, skip to the next issue, and continue the loop
+- After 2 consecutive failures on the same issue, STOP — do not attempt a third fix with the same approach:
+  - Re-read the issue requirements and your implementation from scratch
+  - Ask: is the approach itself wrong, or just the execution?
+  - If the approach is wrong: revert to the branch point and re-implement with a different strategy
+  - If the execution has a fixable bug: proceed with one final attempt
+- If still failing after 3 total attempts, revert the branch changes, log the failure as a comment on the issue, skip to the next issue, and continue the loop
 
 **Pre-existing failures:** If a test file that you did NOT modify is failing, the failure is pre-existing. Create an issue for it using the **create issue** operation (CLAUDE.md § Issue Tracker) if one doesn't already exist, and continue — do not silently work around it.
 

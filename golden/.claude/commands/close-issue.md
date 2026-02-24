@@ -8,6 +8,15 @@ user_invocable: true
 
 The quality gate at the end of implementation. Validates that all acceptance criteria are met before closing an issue.
 
+## Task Tracking Mode
+
+When the project uses `tasks/todo.md` (see CLAUDE.md § Task Tracker):
+- **Invocation:** `/close-issue T-1` (uses `T-NN` references)
+- **Steps 1-3:** Read task from `tasks/todo.md` Active table; same validation logic
+- **Step 4:** Skip (no checkboxes to update on external tracker)
+- **Steps 6-7:** Move the row from Active to Done table with completion date; no closing comment needed
+- **Step 8:** Check downstream `Blocked by: T-NN` references; remove blocked entries where all blockers are done
+
 ## Invocation
 
 ```

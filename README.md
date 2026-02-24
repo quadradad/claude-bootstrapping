@@ -50,9 +50,12 @@ golden/
 
 The central configuration file. Contains:
 
-- **Development philosophy** — TDD, issue-driven workflow, YAGNI, DRY
+- **Development philosophy** — TDD, issue-driven workflow, YAGNI, DRY, plan-before-building, challenge-your-work, fix-bugs-autonomously
 - **Issue management** — Structured format for titles, bodies, dependencies, and acceptance criteria
 - **Issue tracker** — Operations reference table with CLI commands for all issue/milestone operations. Defaults to GitHub Issues (`gh` CLI); swappable to Jira, Linear, or GitLab by updating this one section
+- **Subagent strategy** — Guidelines for keeping the main context clean by offloading to subagents
+- **Session start ritual** — Review lessons, assess state, decide next action at the beginning of each session
+- **Continuous improvement** — Self-improvement loop via `.claude/lessons.md`, triggered by corrections and PR reviews
 - **Commit & PR conventions** — Conventional commits, smart close syntax, branch naming
 - **Workflow command reference** — Quick lookup for all available `/commands`
 
@@ -102,7 +105,7 @@ It does **not** modify any configuration — that's what `/bootstrap-claude` is 
 `/bootstrap-claude` is the bridge between the generic golden set and your specific project. It runs in four phases:
 
 1. **Discovery** — Scans for package manifests, framework configs, build tools, CI/CD, documentation, project structure, issue tracker signals, and git state
-2. **Confirm** — Presents findings and asks targeted questions: profile accuracy, git integration strategy, documentation scaffold, issue scopes, and tracker selection
+2. **Confirm** — Presents findings and asks targeted questions: profile accuracy, git integration strategy, documentation scaffold, issue scopes, tracker selection, and task tracking mode (external tracker vs in-repo `tasks/todo.md`)
 3. **Adapt** — Appends project-specific config to CLAUDE.md, adds tool permissions, creates project-specific skills (e.g., `add-endpoint` for APIs, `add-component` for React), augments the code reviewer, configures formatter hooks, and sets up the issue tracker
 4. **Summary** — Reports everything that was configured and suggests next steps
 
@@ -124,7 +127,7 @@ Run `/wiggum` on the tracking issue and watch it go. It picks up tasks in depend
 
 ### 4. Review
 
-When the work is done, create a PR to your main branch and run `/review-pr`. It performs a structured seven-section review: architecture compliance, code quality, test coverage, security, and more.
+When the work is done, create a PR to your main branch and run `/review-pr`. It performs a structured seven-section review: architecture compliance, code quality, test coverage, security, and more. If the review finds issues Claude introduced, it automatically captures lessons in `.claude/lessons.md` to prevent recurrence.
 
 ### 5. Iterate
 
