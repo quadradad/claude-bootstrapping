@@ -1,0 +1,4 @@
+# Claude Code configuration (local deployed copies, not the golden set source)
+/CLAUDE.md
+/.claude/
+/.mcp.json
