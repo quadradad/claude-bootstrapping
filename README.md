@@ -111,6 +111,8 @@ It does **not** modify any configuration — that's what `/bootstrap-claude` is 
 
 ## Reference Workflow
 
+![Workflow illustration — Plan, Break it down, Let it work, Review, Iterate & Improve](images/Illustration.png)
+
 These commands were built to support a specific development loop. Here's the workflow they were designed around — adapt it however you like.
 
 ### 1. Plan
