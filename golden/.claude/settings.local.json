@@ -24,6 +24,7 @@
       "Bash(git show:*)",
       "Bash(git tag:*)",
       "Bash(git remote:*)",
+      "Bash(git worktree remove:*)",
       "Bash(gh pr create:*)",
       "Bash(gh pr view:*)",
       "Bash(gh pr list:*)",
