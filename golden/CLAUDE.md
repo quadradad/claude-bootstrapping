@@ -153,6 +153,8 @@ Closes #NN
 | `/review-pr` | Standardized PR review against project quality standards |
 | `/setup-release` | Plan a release — milestone, branch, implementation order |
 | `/bootstrap-claude` | Adapt this configuration to the current project's tech stack |
+| `/improve-golden-set` | Extract generalized improvements from a project back into the golden set |
+| `/update-claude` | Pull golden set updates into a bootstrapped project |
 
 ## Code Quality
 
