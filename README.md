@@ -41,7 +41,9 @@ golden/
     │   ├── close-issue.md             # Issue validation & closure
     │   ├── setup-release.md           # Release planning & milestone setup
     │   ├── review-pr.md              # Standardized PR review
-    │   └── bootstrap-claude.md       # Project adapter command
+    │   ├── bootstrap-claude.md       # Project adapter command
+    │   ├── improve-golden-set.md    # Extract improvements from projects
+    │   └── update-claude.md         # Pull golden set updates into projects
 ```
 
 ### CLAUDE.md
@@ -69,6 +71,8 @@ Below a bootstrap marker, `/bootstrap-claude` appends project-specific configura
 | `/close-issue` | Quality gate for issue closure. Validates acceptance criteria against the implementation, checks off criteria on the issue, posts a structured closing comment, and reports downstream unblocks. |
 | `/setup-release` | Scopes a release by filtering issues, creates a milestone, sets up a release branch, generates a phased implementation plan, and creates a draft PR with progress tracking. |
 | `/review-pr` | Seven-section PR review: metadata, architecture compliance, holistic update check, code quality, test coverage, security, and build gates. Produces a structured verdict. |
+| `/improve-golden-set` | Scans a bootstrapped project for novel or improved Claude configuration, proposes generalized extractions, and applies approved changes back into the golden set. |
+| `/update-claude` | Pulls new and changed golden set content into a bootstrapped project. Diffs each file, presents changes for approval, and preserves all project-specific customizations. |
 
 ### Code Reviewer Agent
 
@@ -134,6 +138,34 @@ When the work is done, create a PR to your main branch and run `/review-pr`. It 
 If the review surfaces issues, tell Claude to create issues for the findings, then run `/wiggum` on the new tracking issue. Same loop, same discipline — the review feedback gets the same structured treatment as the original feature work.
 
 This cycle — plan, break down, execute, review, iterate — is the core loop. The commands handle the mechanical parts so you can focus on requirements and review.
+
+## Keeping Projects in Sync
+
+Once the golden set is deployed and bootstrapped, two commands handle ongoing sync:
+
+### Pulling improvements back into the golden set
+
+When you improve Claude configuration in a project — new commands, better instructions, refined conventions — extract those learnings back:
+
+```bash
+cd /path/to/claude-bootstrapping
+claude
+> /improve-golden-set ~/dev/my-project
+```
+
+Claude scans the project, diffs against the golden set, identifies novel or modified content, proposes generalized versions, and applies approved changes to `golden/`. You review and commit.
+
+### Pushing golden set updates to projects
+
+After the golden set evolves, propagate updates to bootstrapped projects:
+
+```bash
+cd /path/to/your/project
+claude
+> /update-claude ~/dev/shared/dotfiles
+```
+
+Claude diffs the golden set against what the project has, presents each change for approval (new items, updates, diverged files, removals), and applies approved changes while preserving all project-specific customizations.
 
 ## Customization
 
