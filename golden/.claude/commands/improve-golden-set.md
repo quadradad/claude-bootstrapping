@@ -125,12 +125,74 @@ For each item, present:
 
 Wait for the user to approve, reject, or modify each item before moving to the next.
 
+### 5b. Budget check
+
+After drafting each proposed change, check whether applying it would exceed
+any budget in `BUDGETS.md`:
+
+1. Simulate the change — what would the target file look like after applying?
+2. Count lines and instructions against the budget
+3. If within budget: proceed to user approval as normal
+4. If over budget: flag it and present options:
+   - **Compress:** Rewrite the proposed addition more concisely
+   - **Relocate:** Move to `agent_docs/` instead of CLAUDE.md (if it's reference data, not a behavioral instruction)
+   - **Replace:** Identify an existing instruction that this supersedes, and propose swapping
+   - **Override:** Accept the budget violation with a noted justification
+
+Never silently exceed a budget. The user must consciously choose to go over.
+
+### 5c. Elevation test
+
+For each proposed extraction, determine the minimum viable level:
+
+**Start at Level 0 (command file):**
+Does this only apply during a specific workflow step?
+→ YES: Put it in the relevant command file. Stop.
+→ NO: Elevate to Level 1.
+
+**Level 1 (agent_docs/):**
+Is this reference data, a format spec, or a checklist?
+→ YES: Put it in an `agent_docs/` file. Stop.
+→ NO: Elevate to Level 2.
+
+**Level 2 (CLAUDE.md project-specific):**
+Is this a project convention that might not apply universally?
+→ YES: Recommend as project-specific. Stop extracting to golden.
+→ NO: Elevate to Level 3.
+
+**Level 3 (CLAUDE.md baseline):**
+Does removing this change Claude's behavior on unrelated tasks?
+→ YES: This is a genuine universal instruction. Add to baseline.
+→ NO: It shouldn't be here. Re-evaluate at a lower level.
+
+Present the recommended level alongside each extraction proposal.
+The user can override, but the default should always be the lowest level.
+
 ### 6. Apply approved changes
 
 For each approved item:
 - Update the corresponding file in `golden/` (e.g., `golden/CLAUDE.md`, `golden/.claude/commands/<name>.md`)
 - For novel commands/agents, create the new file in `golden/.claude/commands/` or `golden/.claude/agents/`
 - For CLAUDE.md changes, edit the golden CLAUDE.md directly
+
+**Changelog entry:** After applying all changes, append an entry to `golden/CHANGELOG.md`:
+
+```markdown
+## [Date] — /improve-golden-set from [project-name]
+
+### Added
+- [file or section added] (Level N) — [source description]
+
+### Moved
+- [content]: [old location] → [new location] (Level N → Level M)
+
+### Removed
+- [content removed] — [reason]
+
+### Budget impact
+- CLAUDE.md baseline: NN/60 lines → NN/60 lines (+/-N)
+- agent_docs/ files: N → N (+/-N)
+```
 
 Do NOT commit. Present a summary of all files changed and let the user review and commit manually.
 
@@ -154,6 +216,23 @@ Do NOT commit. Present a summary of all files changed and let the user review an
 2. Run `git diff` to verify everything looks correct
 3. Commit when satisfied
 ```
+
+### 8. Budget health check
+
+After applying approved extractions:
+
+1. Measure all budgeted files against `BUDGETS.md`
+2. Report current utilization:
+   ```
+   Budget utilization:
+   - CLAUDE.md baseline: NN/60 lines (NN%), NN/25 instructions (NN%)
+   - agent_docs/issue-conventions.md: NN/120 lines (NN%)
+   - [... each agent_docs/ file]
+   ```
+3. If any file exceeds 80% of its budget, recommend running `/slim`
+4. If any file exceeds 100%, require the user to either:
+   - Run `/slim` now to make room
+   - Explicitly override with justification
 
 ## Rules
 
