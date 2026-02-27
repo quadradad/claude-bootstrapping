@@ -249,6 +249,7 @@ After applying approved extractions:
 
 - NEVER extract content from below the bootstrap marker in CLAUDE.md
 - NEVER extract `.claude/lessons.md` content
+- NEVER extract governance files (`BUDGETS.md`, `CHANGELOG.md`) — these are managed in the golden set only, deployed by `deploy.sh`, and updated by `/update-claude`
 - NEVER extract project-specific permissions (language/tool-specific like `go build`, `cargo test`, `docker`, `psql`, `jira`, `glab`, `linear`)
 - NEVER auto-commit — always leave changes for user review
 - ALWAYS present each extraction for approval before applying
