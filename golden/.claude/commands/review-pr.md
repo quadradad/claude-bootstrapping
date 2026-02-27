@@ -178,15 +178,11 @@ gh pr review NUMBER --approve --body "REVIEW_BODY"
 
 ### 8. Self-Improvement Reflection
 
-If the verdict is REQUEST_CHANGES or there are 2+ significant WARNs:
+If the verdict is REQUEST_CHANGES or 2+ significant WARNs, **and** the PR was authored by Claude:
 
-1. Identify which findings stem from patterns Claude introduced in the reviewed code
-2. For each, reflect on WHY — knowledge gap, missed convention, over-engineering, or something else?
-3. <!-- TODO: Phase 4 (issue #35) will replace this step with /pomo invocation -->
-Update `.claude/lessons.md` following the format in `agent_docs/self-improvement.md`
-4. If the reviewed PR was not authored by Claude, skip this step
+Run `/pomo` with the review findings as context. /pomo handles pattern identification, deduplication, and lessons.md updates per `agent_docs/self-improvement.md`.
 
-This creates a feedback loop: review finds problems → lessons captured → future work avoids them.
+Skip this step for PRs not authored by Claude.
 
 ## Rules
 
