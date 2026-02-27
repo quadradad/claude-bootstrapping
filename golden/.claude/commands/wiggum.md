@@ -43,7 +43,7 @@ Detect the current working context:
 git branch --show-current
 ```
 
-Check the milestone using the **list milestones** operation (CLAUDE.md § Issue Tracker), filtering for the target milestone.
+Check the milestone using the **list milestones** operation (see `agent_docs/issue-tracker-ops.md`), filtering for the target milestone.
 
 **Discover release PR:**
 Find the open draft PR from the release branch to main:
@@ -125,7 +125,7 @@ This runs the project's linting, type-checking, and all tests.
   - If the execution has a fixable bug: proceed with one final attempt
 - If still failing after 3 total attempts, revert the branch changes, log the failure as a comment on the issue, skip to the next issue, and continue the loop
 
-**Pre-existing failures:** If a test file that you did NOT modify is failing, the failure is pre-existing. Create an issue for it using the **create issue** operation (CLAUDE.md § Issue Tracker) if one doesn't already exist, and continue — do not silently work around it.
+**Pre-existing failures:** If a test file that you did NOT modify is failing, the failure is pre-existing. Create an issue for it using the **create issue** operation (see `agent_docs/issue-tracker-ops.md`) if one doesn't already exist, and continue — do not silently work around it.
 
 ### 7. Docs
 
@@ -151,7 +151,7 @@ git push -u origin 11-feature-branch
 
 Commit message rules:
 - Use conventional commits format matching the issue title type
-- Include the smart close syntax (CLAUDE.md § Issue Tracker) to auto-close the issue when merged
+- Include the smart close syntax (see `agent_docs/issue-tracker-ops.md`) to auto-close the issue when merged
 - List key changes in the body
 
 ### 9. PR
@@ -185,7 +185,7 @@ PR body:
 SMART_CLOSE_SYNTAX
 ```
 
-Use the smart close syntax from CLAUDE.md § Issue Tracker for the linked issue reference.
+Use the smart close syntax from `agent_docs/issue-tracker-ops.md` for the linked issue reference.
 
 ### 10. Close issue
 

@@ -446,7 +446,7 @@ When Claude creates or updates documentation:
 
 Fill in the CLAUDE.md Issue Tracker section based on the detected (or user-selected) tracker:
 
-**For GitHub Issues (default):** No changes needed — the baseline CLAUDE.md already has GitHub CLI commands.
+**For GitHub Issues (default):** No changes needed — the baseline `agent_docs/issue-tracker-ops.md` already has GitHub CLI commands.
 
 **For Jira:**
 - **Tool:** Jira CLI (`jira`) or REST API
@@ -504,7 +504,7 @@ If the user selected **in-repo task file** in Question 6:
 ```markdown
 # Lessons Learned
 
-Patterns learned from corrections and reviews. See CLAUDE.md § Continuous Improvement.
+Patterns learned from corrections and reviews. See `agent_docs/self-improvement.md`.
 ```
 
 ## Phase 4: Summary
