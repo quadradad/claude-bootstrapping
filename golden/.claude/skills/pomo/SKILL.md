@@ -68,9 +68,25 @@ Read `.claude/lessons.md` and check whether an existing lesson already covers th
 - **Same pattern, new example:** Update the existing lesson with an additional incident reference. Don't create a duplicate.
 - **Related but distinct:** Create a new lesson and cross-reference the related one.
 
+### Step 3b: Lifecycle management
+
+If `.claude/lessons.md` exceeds 40 entries, run a pruning pass before adding new content:
+
+1. **Scan for promoted lessons:** Check each entry against CLAUDE.md instructions and command rules. If a lesson has been encoded as a permanent rule, flag it for removal with a note: "Promoted to CLAUDE.md § [section]" or "Promoted to [command]"
+2. **Scan for stale lessons:** Identify entries with no matching incidents in the current project context. Flag as candidates for archival.
+3. **Move flagged entries** to `.claude/lessons-archive.md` (create if needed). Archive entries remain searchable but don't load at session start.
+4. **Report:** "Pruned N lessons (M promoted, K stale). Active: NN/40."
+
+See `agent_docs/self-improvement.md` § Lesson lifecycle for the full lifecycle states (Active → Validated → Promoted → Stale).
+
 ### Step 4: Write the lesson
 
 Add a new entry to `.claude/lessons.md` following the format defined in `agent_docs/self-improvement.md`. If `.claude/lessons.md` doesn't exist yet, create it.
+
+**Lifecycle awareness:**
+- New lessons are implicitly **Active**
+- If Step 3 found a matching existing lesson, update it and mark as **Validated** (2+ incidents)
+- If a lesson has been validated 3+ times, propose **promotion** to a CLAUDE.md instruction or command rule (handled in Step 5)
 
 Guidelines:
 - The rule should be **generalizable** — not "don't forget to call initialize() after reset()" but "destructive operations must reconstruct usable state"

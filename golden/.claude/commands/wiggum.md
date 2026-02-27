@@ -127,6 +127,18 @@ This runs the project's linting, type-checking, and all tests.
 
 **Pre-existing failures:** If a test file that you did NOT modify is failing, the failure is pre-existing. Create an issue for it using the **create issue** operation (see `agent_docs/issue-tracker-ops.md`) if one doesn't already exist, and continue — do not silently work around it.
 
+### 6b. Post-Retry Reflection
+
+If this issue required 2+ retry attempts before passing validation:
+
+1. Run `/pomo` with context about the retry failures:
+   - What went wrong on each attempt
+   - The approach tried and why it failed
+   - What finally worked (or didn't)
+2. Continue the loop regardless of `/pomo`'s outcome — this is non-blocking
+
+This captures debugging patterns while they're fresh, feeding the self-improvement loop.
+
 ### 7. Docs
 
 Check if the implementation requires documentation updates per the project's conventions in CLAUDE.md. Update relevant docs if architecture, APIs, or data models changed.
