@@ -70,7 +70,7 @@ Read `.claude/lessons.md` and check whether an existing lesson already covers th
 
 ### Step 4: Write the lesson
 
-Add a new entry to `.claude/lessons.md` following the format defined in CLAUDE.md (see Continuous Improvement section). If `.claude/lessons.md` doesn't exist yet, create it.
+Add a new entry to `.claude/lessons.md` following the format defined in `agent_docs/self-improvement.md`. If `.claude/lessons.md` doesn't exist yet, create it.
 
 Guidelines:
 - The rule should be **generalizable** — not "don't forget to call initialize() after reset()" but "destructive operations must reconstruct usable state"

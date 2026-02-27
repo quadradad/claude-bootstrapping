@@ -36,9 +36,9 @@ Extract filters from user input:
 
 ### 2. Query matching issues
 
-Fetch matching issues using the **list open issues** operation (CLAUDE.md § Issue Tracker), filtering by the relevant labels.
+Fetch matching issues using the **list open issues** operation (see `agent_docs/issue-tracker-ops.md`), filtering by the relevant labels.
 
-If an issue range was specified, also fetch those individually using the **view issue** operation (CLAUDE.md § Issue Tracker).
+If an issue range was specified, also fetch those individually using the **view issue** operation (see `agent_docs/issue-tracker-ops.md`).
 
 Combine results, deduplicate by issue number.
 
@@ -72,9 +72,9 @@ Generate the milestone name: `v{version}` or `release/YYYY-MM-{scope}`
 - scope = primary label filter (e.g., `bugs`, `features`, `full`)
 - Example: `v1.0` or `release/2026-03-full`
 
-Create using the **create milestone** operation (CLAUDE.md § Issue Tracker).
+Create using the **create milestone** operation (see `agent_docs/issue-tracker-ops.md`).
 
-Assign all release issues to the milestone using the **assign to milestone** operation (CLAUDE.md § Issue Tracker).
+Assign all release issues to the milestone using the **assign to milestone** operation (see `agent_docs/issue-tracker-ops.md`).
 
 ### 6. Generate implementation order
 
@@ -162,7 +162,7 @@ Next step: Run /wiggum to start implementing. Track progress on PR #30.
 
 ## Rules
 
-- NEVER create a milestone that already exists — check first using the **list milestones** operation (CLAUDE.md § Issue Tracker)
+- NEVER create a milestone that already exists — check first using the **list milestones** operation (see `agent_docs/issue-tracker-ops.md`)
 - NEVER force-push the release branch
 - ALWAYS ask user confirmation before creating the milestone and branch
 - External blockers must be resolved (included, pre-completed, or dependents excluded) before proceeding
