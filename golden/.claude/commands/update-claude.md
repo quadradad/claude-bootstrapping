@@ -61,6 +61,18 @@ Ignore project commands that do not exist in the golden set — those are projec
 
 **Note:** Without version tracking, distinguishing "Golden updated" from "Project modified" may not always be possible. When in doubt, classify as **Diverged** and let the user decide.
 
+### 4b. Diff agent_docs
+
+For each file in `golden/agent_docs/*.md`, check whether a matching file exists in the project's `agent_docs/`:
+
+- **New:** File exists in golden but not in the project
+- **Unchanged:** File is identical in both
+- **Golden updated:** Golden version differs, and the project has the older version
+- **Project modified:** Project version differs, and golden has the older version
+- **Diverged:** Both sides differ from each other
+
+Ignore project `agent_docs/` files that do not exist in the golden set — those are project-specific reference docs and must be left alone.
+
 ### 5. Diff agents
 
 For each file in `golden/.claude/agents/*.md`, check whether a matching file exists in the project's `.claude/agents/`:
@@ -86,6 +98,14 @@ Compare server configurations between `golden/.mcp.json` and the project's `.mcp
 Identify new servers in the golden set that are not in the project. Identify servers that exist in both but have different configurations.
 
 Never flag project-specific servers for removal.
+
+### 7b. Diff governance files
+
+Compare `golden/BUDGETS.md` against the project's `BUDGETS.md` (if it exists):
+- If the project has no `BUDGETS.md`, flag as **New** — recommend adding
+- If both exist, diff and classify as **Unchanged**, **Golden updated**, **Project modified**, or **Diverged**
+
+Similarly, compare `golden/CHANGELOG.md` against the project's `CHANGELOG.md`.
 
 ### 8. Check for removed golden items
 
@@ -133,9 +153,9 @@ Wait for the user to approve or reject each change before proceeding.
 
 For each approved change:
 
-**New commands/agents:** Copy from `golden/.claude/commands/` or `golden/.claude/agents/` to the project's corresponding directory.
+**New commands/agents/agent_docs:** Copy from golden to the project's corresponding directory. Create `agent_docs/` if it doesn't exist.
 
-**Updated commands/agents:** Replace the project's version with the golden version.
+**Updated commands/agents/agent_docs:** Replace the project's version with the golden version.
 
 **CLAUDE.md baseline updates:** Replace the project's baseline section (everything above the bootstrap marker) with the golden version. Preserve everything below the marker untouched.
 
@@ -145,11 +165,24 @@ For each approved change:
 
 **MCP changes:** Add new servers or update changed server configurations in the project's `.mcp.json`. Do not remove project-specific servers.
 
+**Governance files (BUDGETS.md, CHANGELOG.md):** Copy or update as approved. For CHANGELOG.md, the project's changelog will be replaced — warn the user if the project has local-only entries.
+
 **Diverged items (golden chosen):** Replace the project version with the golden version.
 
 **Diverged items (project chosen):** No change.
 
 **Removed items (approved for removal):** Delete the file from the project.
+
+### 11b. Post-Application Budget Audit
+
+After applying all changes, re-measure the project's CLAUDE.md against `BUDGETS.md`:
+
+1. Count baseline lines and instructions (above marker)
+2. Count project-specific lines and instructions (below marker)
+3. Count total combined
+4. If any budget is exceeded, warn:
+
+   "Budget exceeded: CLAUDE.md baseline is now NN lines (budget: 60). Consider running /slim to identify compression or relocation opportunities."
 
 ### 12. Summary
 
@@ -163,14 +196,22 @@ Present a summary of all changes applied:
 - Commands added: /command-a, /command-b
 - Commands updated: /command-c
 - Agents updated: code-reviewer.md
+- agent_docs/ added: issue-conventions.md
+- agent_docs/ updated: self-improvement.md
+- Governance files: BUDGETS.md updated
 - Permissions added: N new baseline permissions
 - MCP servers added: server-name
 - Commands removed: /old-command
+
+### Budget Utilization:
+- CLAUDE.md baseline: NN/60 lines (NN%), NN/25 instructions (NN%)
+- CLAUDE.md project-specific: NN/80 lines (NN%), NN/30 instructions (NN%)
 
 ### Unchanged:
 - Project-specific CLAUDE.md sections: preserved
 - Project-specific commands: untouched
 - Project-specific agent augmentations: preserved
+- Project-specific agent_docs/: preserved
 - Project-specific permissions: preserved
 - Project-specific MCP servers: preserved
 

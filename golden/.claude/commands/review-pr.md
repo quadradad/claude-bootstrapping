@@ -33,7 +33,7 @@ gh pr diff NUMBER
 Check:
 - [ ] **Title** follows conventional format: `type(scope): description` or is descriptive
 - [ ] **Description** is filled in (not just template boilerplate)
-- [ ] **Linked issue** exists (smart close syntax from CLAUDE.md § Issue Tracker in body) — WARN if missing, not FAIL
+- [ ] **Linked issue** exists (smart close syntax from `agent_docs/issue-tracker-ops.md` in body) — WARN if missing, not FAIL
 - [ ] **Base branch** is correct (release branch if one exists, otherwise `main`)
 
 ### 2. Architecture Compliance
@@ -178,14 +178,11 @@ gh pr review NUMBER --approve --body "REVIEW_BODY"
 
 ### 8. Self-Improvement Reflection
 
-If the verdict is REQUEST_CHANGES or there are 2+ significant WARNs:
+If the verdict is REQUEST_CHANGES or 2+ significant WARNs, **and** the PR was authored by Claude:
 
-1. Identify which findings stem from patterns Claude introduced in the reviewed code
-2. For each, reflect on WHY — knowledge gap, missed convention, over-engineering, or something else?
-3. Update `.claude/lessons.md` following the format in CLAUDE.md § Continuous Improvement
-4. If the reviewed PR was not authored by Claude, skip this step
+Run `/pomo` with the review findings as context. /pomo handles pattern identification, deduplication, and lessons.md updates per `agent_docs/self-improvement.md`.
 
-This creates a feedback loop: review finds problems → lessons captured → future work avoids them.
+Skip this step for PRs not authored by Claude.
 
 ## Rules
 

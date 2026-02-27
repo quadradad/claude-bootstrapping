@@ -10,7 +10,7 @@ The quality gate at the end of implementation. Validates that all acceptance cri
 
 ## Task Tracking Mode
 
-When the project uses `tasks/todo.md` (see CLAUDE.md § Task Tracker):
+When CLAUDE.md defines a Task Tracker section using `tasks/todo.md`:
 - **Invocation:** `/close-issue T-1` (uses `T-NN` references)
 - **Steps 1-3:** Read task from `tasks/todo.md` Active table; same validation logic
 - **Step 4:** Skip (no checkboxes to update on external tracker)
@@ -28,7 +28,7 @@ When the project uses `tasks/todo.md` (see CLAUDE.md § Task Tracker):
 
 ### 1. Fetch the issue
 
-Fetch the issue using the **view issue** operation (CLAUDE.md § Issue Tracker).
+Fetch the issue using the **view issue** operation (see `agent_docs/issue-tracker-ops.md`).
 
 Parse the issue body to extract:
 - Summary
@@ -75,9 +75,9 @@ If all criteria are PASS (with optional SKIPs), proceed to close.
 ### 4. Check off criteria on the issue
 
 Update the issue body to check off each passing criterion:
-1. Fetch current body using the **view issue body** operation (CLAUDE.md § Issue Tracker)
+1. Fetch current body using the **view issue body** operation (see `agent_docs/issue-tracker-ops.md`)
 2. Replace `- [ ]` with `- [x]` for each criterion that passed
-3. Update using the **edit issue body** operation (CLAUDE.md § Issue Tracker)
+3. Update using the **edit issue body** operation (see `agent_docs/issue-tracker-ops.md`)
 
 This is best-effort — if it fails, log a warning and continue to close.
 
@@ -116,8 +116,8 @@ Build a structured comment for the issue:
 
 When called interactively, show the closing comment and ask for confirmation.
 When called autonomously (e.g., by `/wiggum`), proceed without confirmation:
-1. Post the comment using the **comment on issue** operation (CLAUDE.md § Issue Tracker)
-2. Close using the **close issue** operation (CLAUDE.md § Issue Tracker)
+1. Post the comment using the **comment on issue** operation (see `agent_docs/issue-tracker-ops.md`)
+2. Close using the **close issue** operation (see `agent_docs/issue-tracker-ops.md`)
 
 ### 8. Downstream impact
 
@@ -126,10 +126,10 @@ After closing, check for downstream effects:
 **Unblocked issues:**
 - Find all open issues that had `- Blocked by: #NUMBER` in their body
 - For each, check if ALL their blockers are now closed
-- If fully unblocked, offer to remove the `blocked` label using the **remove label** operation (CLAUDE.md § Issue Tracker)
+- If fully unblocked, offer to remove the `blocked` label using the **remove label** operation (see `agent_docs/issue-tracker-ops.md`)
 
 **Milestone tracking:**
-- If the closed issue belongs to a milestone, check progress using the **check milestone progress** operation (CLAUDE.md § Issue Tracker)
+- If the closed issue belongs to a milestone, check progress using the **check milestone progress** operation (see `agent_docs/issue-tracker-ops.md`)
 - Report: "Milestone 'v1.0': 5/12 issues closed (42%)"
 
 ### 9. Summary

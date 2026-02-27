@@ -10,7 +10,7 @@ Convert a plan discussed in conversation into a structured set of issues with a 
 
 ## Task Tracking Mode
 
-When the project uses `tasks/todo.md` (see CLAUDE.md § Task Tracker):
+When CLAUDE.md defines a Task Tracker section using `tasks/todo.md`:
 - **Step 0:** Skip assignee resolution — assignees are not available in todo.md mode
 - **Steps 1-5:** Same planning and validation logic
 - **Step 6:** Present the same review table, using `T-NN` IDs instead of `#NN`
@@ -32,10 +32,10 @@ The argument is always an **assignee** — a conversational name, username, or `
 
 If an assignee argument was provided:
 
-1. **`me`** — Resolve using the **resolve current user** operation (CLAUDE.md § Issue Tracker). Use the returned login.
+1. **`me`** — Resolve using the **resolve current user** operation (see `agent_docs/issue-tracker-ops.md`). Use the returned login.
 
 2. **Any other name** — Resolve to a username:
-   a. Fetch collaborators using the **list collaborators** operation (CLAUDE.md § Issue Tracker)
+   a. Fetch collaborators using the **list collaborators** operation (see `agent_docs/issue-tracker-ops.md`)
    b. Try to match the argument (case-insensitive) against:
       - Exact `login` match
       - Partial `login` match (argument is a prefix or substring)
@@ -65,7 +65,7 @@ If no plan is found in conversation, ask: "I don't see a plan in our conversatio
 
 ## Step 2. Survey Existing Issues
 
-Fetch all open issues using the **list open issues** operation (CLAUDE.md § Issue Tracker).
+Fetch all open issues using the **list open issues** operation (see `agent_docs/issue-tracker-ops.md`).
 
 Build a set of existing issue titles and key terms to detect potential duplicates.
 
@@ -179,7 +179,7 @@ Ask: "Create these N issues (1 epic + N-1 implementation issues)? You can ask to
 
 Create in dependency order (blockers first, then dependents). The tracking epic is created **first** so child issues can reference it.
 
-For the epic, use the **create issue** operation (CLAUDE.md § Issue Tracker) with the `tracking` label and optional `$ASSIGNEE`.
+For the epic, use the **create issue** operation (see `agent_docs/issue-tracker-ops.md`) with the `tracking` label and optional `$ASSIGNEE`.
 
 For each child issue, use the **create issue** operation with appropriate labels and optional `$ASSIGNEE`.
 
@@ -189,7 +189,7 @@ After each creation:
 - Update the epic's issue table with real `#NN` references
 - Apply `blocked` label to issues whose dependencies are still open
 
-After all child issues are created, **edit the epic** to fill in the real issue numbers using the **edit issue body** operation (CLAUDE.md § Issue Tracker).
+After all child issues are created, **edit the epic** to fill in the real issue numbers using the **edit issue body** operation (see `agent_docs/issue-tracker-ops.md`).
 
 ## Step 8. Post-Creation Validation
 

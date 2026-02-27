@@ -10,7 +10,7 @@ Analyze all open issues, build a dependency graph, and produce an actionable sum
 
 ## Task Tracking Mode
 
-When the project uses `tasks/todo.md` (see CLAUDE.md § Task Tracker):
+When CLAUDE.md defines a Task Tracker section using `tasks/todo.md`:
 - **Step 1:** Read `tasks/todo.md` instead of fetching from an external tracker
 - **Step 2:** Parse `- Blocked by: T-NN — reason` dependency format
 - **Steps 3-4:** Same logic, using `T-NN` references
@@ -21,7 +21,7 @@ When the project uses `tasks/todo.md` (see CLAUDE.md § Task Tracker):
 
 ### 1. Fetch all open issues
 
-Fetch all open issues using the **list open issues** operation (CLAUDE.md § Issue Tracker).
+Fetch all open issues using the **list open issues** operation (see `agent_docs/issue-tracker-ops.md`).
 
 Store the full result for processing.
 
@@ -113,7 +113,7 @@ Present a structured report:
 If label inconsistencies were found, ask the user:
 > "Found N label issues. Apply fixes? (This will add/remove `blocked` labels as needed)"
 
-If confirmed, apply fixes using the **add label** and **remove label** operations (CLAUDE.md § Issue Tracker).
+If confirmed, apply fixes using the **add label** and **remove label** operations (see `agent_docs/issue-tracker-ops.md`).
 
 ## Notes
 
