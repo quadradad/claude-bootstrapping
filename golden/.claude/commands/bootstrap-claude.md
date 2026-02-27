@@ -207,9 +207,27 @@ Options:
 
 Based on discovery + user answers, make the following changes:
 
+### 3.0 Classify generated content
+
+Before writing to CLAUDE.md or agent_docs/, classify each section by destination:
+
+**Into CLAUDE.md (project-specific, below marker) — behavioral instructions only:**
+- Project Overview (3 lines max: name, architecture, stack)
+- Validation command (one-liner — the behavioral trigger)
+- Architecture Rules (instructions that change behavior on unrelated tasks)
+- Issue Scopes (one-line list)
+
+**Into agent_docs/ (project reference data):**
+- Build/Test/Run command table → `agent_docs/build-and-test.md`
+- Project Structure descriptions → `agent_docs/project-structure.md`
+- Key Files reference → `agent_docs/key-files.md`
+- Project-specific tracker operations (if non-GitHub) → `agent_docs/issue-tracker-ops.md` (extend existing)
+
+**Classification test:** "If I removed this from CLAUDE.md, would Claude's behavior change on tasks that don't directly involve this topic?" YES → CLAUDE.md. NO → agent_docs/.
+
 ### 3.1 Append to CLAUDE.md
 
-Find the `<!-- bootstrap-claude: project-specific below -->` marker. Append below it:
+Find the `<!-- bootstrap-claude: project-specific below -->` marker. Append below it. Only behavioral instructions and pointers — reference data goes to agent_docs/ in Step 3.1b.
 
 ```markdown
 ## Project Overview
@@ -220,19 +238,7 @@ Find the `<!-- bootstrap-claude: project-specific below -->` marker. Append belo
 
 ## How to Build / Test / Run
 
-| Command | Purpose |
-|---------|---------|
-| `[detected build command]` | Build the project |
-| `[detected test command]` | Run tests |
-| `[detected lint command]` | Run linter |
-| `[detected validation command]` | Run full validation (REQUIRED before commits) |
-| `[detected run/start command]` | Start the project locally |
-
-**Validation command:** `[command]` — this is the hard gate for all workflow commands.
-
-## Project Structure
-
-[Describe the key directories and their purposes based on what was discovered]
+**Validation command:** `[command]` — this is the hard gate for all workflow commands. For all build/test/run commands, see `agent_docs/build-and-test.md`.
 
 ## Issue Scopes
 
@@ -248,6 +254,37 @@ Scopes for commit messages and issue titles:
 - [For Electron: "Renderer code never imports Node.js modules directly"]
 - [For Pipeline: "Web server orchestrates via CLI subprocesses — never imports pipeline internals"]
 - [For Monorepo: "Packages declare explicit dependencies — no implicit cross-package imports"]
+
+## Key Files
+
+For project structure and key files, see `agent_docs/project-structure.md`.
+```
+
+### 3.1b Create project-specific agent_docs
+
+Create the following reference files in `agent_docs/`:
+
+**`agent_docs/build-and-test.md`:**
+```markdown
+# Build & Test Commands
+> Reference document. Loaded by workflow commands when running build/test operations.
+
+| Command | Purpose |
+|---------|---------|
+| `[detected build command]` | Build the project |
+| `[detected test command]` | Run tests |
+| `[detected lint command]` | Run linter |
+| `[detected validation command]` | Run full validation (REQUIRED before commits) |
+| `[detected run/start command]` | Start the project locally |
+```
+
+**`agent_docs/project-structure.md`:**
+```markdown
+# Project Structure & Key Files
+> Reference document. Loaded when navigating or modifying project architecture.
+
+## Directory Structure
+[Describe key directories and their purposes based on what was discovered]
 
 ## Key Files
 
@@ -507,6 +544,16 @@ If the user selected **in-repo task file** in Question 6:
 Patterns learned from corrections and reviews. See `agent_docs/self-improvement.md`.
 ```
 
+### 3.11 Post-bootstrap budget check
+
+After all Phase 3 changes:
+
+1. Count CLAUDE.md total lines (baseline + project-specific)
+2. Count against combined budget from `BUDGETS.md`: 60 (baseline) + 80 (project) = 140 max lines
+3. If over budget, identify which generated sections can be moved to `agent_docs/`
+4. Report in the Phase 4 summary:
+   - "CLAUDE.md: NN/140 lines (NN%). Budget: healthy / warning / exceeded."
+
 ## Phase 4: Summary
 
 After all changes, present a summary:
@@ -516,6 +563,7 @@ After all changes, present a summary:
 
 ### Changes Made:
 - CLAUDE.md: Appended project-specific configuration
+- agent_docs/: Created project reference docs (build-and-test.md, project-structure.md)
 - settings.local.json: Added [N] project-specific permissions
 - Skills created: [list of skills]
 - Code reviewer: Augmented with [project-type] checks
@@ -528,6 +576,7 @@ After all changes, present a summary:
 - Test command: `[command]`
 - Issue scopes: [list]
 - Architecture rules: [summary]
+- CLAUDE.md: NN/140 lines (NN%). Budget: [healthy / warning / exceeded]
 
 ### Next Steps:
 1. Review the changes — especially CLAUDE.md and the generated skills
