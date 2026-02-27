@@ -43,6 +43,7 @@ EXISTING=()
 [ -f "$TARGET/CLAUDE.md" ] && EXISTING+=("CLAUDE.md")
 [ -d "$TARGET/.claude" ] && EXISTING+=(".claude/")
 [ -f "$TARGET/.mcp.json" ] && EXISTING+=(".mcp.json")
+[ -d "$TARGET/agent_docs" ] && EXISTING+=("agent_docs/")
 
 if [ ${#EXISTING[@]} -gt 0 ]; then
   echo ""
@@ -70,7 +71,22 @@ mkdir -p "$TARGET/.claude"
 rsync -a "$GOLDEN_DIR/.claude/" "$TARGET/.claude/"
 
 # Copy .mcp.json
-cp "$GOLDEN_DIR/.mcp.json" "$TARGET/.mcp.json"
+if [ -f "$GOLDEN_DIR/.mcp.json" ]; then
+  cp "$GOLDEN_DIR/.mcp.json" "$TARGET/.mcp.json"
+fi
+
+# Copy agent_docs/
+if [ -d "$GOLDEN_DIR/agent_docs" ]; then
+  mkdir -p "$TARGET/agent_docs"
+  rsync -a "$GOLDEN_DIR/agent_docs/" "$TARGET/agent_docs/"
+fi
+
+# Copy governance files
+for file in BUDGETS.md CHANGELOG.md; do
+  if [ -f "$GOLDEN_DIR/$file" ]; then
+    cp "$GOLDEN_DIR/$file" "$TARGET/$file"
+  fi
+done
 
 echo ""
 echo "Done! Golden set deployed to $TARGET"
@@ -82,6 +98,9 @@ echo "  - .claude/commands/bootstrap-claude.md (project adapter)"
 echo "  - .claude/agents/code-reviewer.md (review agent)"
 echo "  - .claude/settings.local.json (baseline permissions)"
 echo "  - .mcp.json (MCP server config)"
+echo "  - agent_docs/ (reference documents)"
+echo "  - BUDGETS.md (context budget constraints)"
+echo "  - CHANGELOG.md (sync system changelog)"
 echo ""
 echo "Next step:"
 echo "  cd $TARGET"
