@@ -489,21 +489,21 @@ Fill in the CLAUDE.md Issue Tracker section based on the detected (or user-selec
 - **Tool:** Jira CLI (`jira`) or REST API
 - **Issue reference format:** `PROJ-NN` (e.g., `PROJ-53`)
 - **Smart close syntax:** Jira smart commits (e.g., `PROJ-53 #close`)
-- Update the Operations Reference table with Jira CLI equivalents
+- Update `agent_docs/issue-tracker-ops.md` with Jira CLI equivalents
 - Add `Bash(jira:*)` to settings.local.json permissions
 
 **For Linear:**
 - **Tool:** Linear CLI (`linear`) or GraphQL API
 - **Issue reference format:** `TEAM-NN` (e.g., `ENG-53`)
 - **Smart close syntax:** `Fixes TEAM-NN`
-- Update the Operations Reference table with Linear CLI equivalents
+- Update `agent_docs/issue-tracker-ops.md` with Linear CLI equivalents
 - Add `Bash(linear:*)` to settings.local.json permissions
 
 **For GitLab Issues:**
 - **Tool:** GitLab CLI (`glab`)
 - **Issue reference format:** `#NN` (same as GitHub)
 - **Smart close syntax:** `Closes #NN`
-- Update the Operations Reference table with `glab` CLI equivalents
+- Update `agent_docs/issue-tracker-ops.md` with `glab` CLI equivalents
 - Add `Bash(glab:*)` to settings.local.json permissions
 
 ### 3.10 Configure Task Tracking Mode
@@ -533,7 +533,7 @@ If the user selected **in-repo task file** in Question 6:
   - Task reference format: `T-NN`
   - Commit reference: `Completes T-NN`
   - Dependency format: `- Blocked by: T-NN — reason`
-  - Operations Reference table with file read/write operations instead of CLI commands
+  - `agent_docs/issue-tracker-ops.md` with file read/write operations instead of CLI commands
 - Commit Conventions: `Closes #NN` → `Completes T-NN`
 
 **Create `.claude/lessons.md`** with an empty template (this is created regardless of tracking mode):
