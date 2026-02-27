@@ -10,7 +10,7 @@ Convert a plan discussed in conversation into a structured set of issues with a 
 
 ## Task Tracking Mode
 
-When the project uses `tasks/todo.md` (see CLAUDE.md § Task Tracker):
+When CLAUDE.md defines a Task Tracker section using `tasks/todo.md`:
 - **Step 0:** Skip assignee resolution — assignees are not available in todo.md mode
 - **Steps 1-5:** Same planning and validation logic
 - **Step 6:** Present the same review table, using `T-NN` IDs instead of `#NN`

@@ -10,7 +10,7 @@ The quality gate at the end of implementation. Validates that all acceptance cri
 
 ## Task Tracking Mode
 
-When the project uses `tasks/todo.md` (see CLAUDE.md § Task Tracker):
+When CLAUDE.md defines a Task Tracker section using `tasks/todo.md`:
 - **Invocation:** `/close-issue T-1` (uses `T-NN` references)
 - **Steps 1-3:** Read task from `tasks/todo.md` Active table; same validation logic
 - **Step 4:** Skip (no checkboxes to update on external tracker)

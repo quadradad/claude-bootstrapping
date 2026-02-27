@@ -18,7 +18,7 @@ The orchestrator. Picks up issues in dependency order and implements them contin
 
 ## Task Tracking Mode
 
-When the project uses `tasks/todo.md` (see CLAUDE.md § Task Tracker):
+When CLAUDE.md defines a Task Tracker section using `tasks/todo.md`:
 - **Step 1 (Context):** Read `tasks/todo.md` Active table instead of querying milestones. Skip release PR discovery.
 - **Step 2 (Select):** Pick the highest-impact unblocked task from the Active table
 - **Step 3 (Branch):** Use `T-NN-slug` branch naming (e.g., `T-3-add-auth`)

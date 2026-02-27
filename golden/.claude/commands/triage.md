@@ -10,7 +10,7 @@ Analyze all open issues, build a dependency graph, and produce an actionable sum
 
 ## Task Tracking Mode
 
-When the project uses `tasks/todo.md` (see CLAUDE.md § Task Tracker):
+When CLAUDE.md defines a Task Tracker section using `tasks/todo.md`:
 - **Step 1:** Read `tasks/todo.md` instead of fetching from an external tracker
 - **Step 2:** Parse `- Blocked by: T-NN — reason` dependency format
 - **Steps 3-4:** Same logic, using `T-NN` references
