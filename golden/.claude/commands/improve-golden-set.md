@@ -75,7 +75,7 @@ For each classified item, build a diff report:
 
 If nothing has changed or everything is project-specific, report "No extractable improvements found" and stop.
 
-### 4b. Classify by content type
+### 5. Classify by content type
 
 For each item that is Novel or Golden modified, classify it:
 
@@ -105,9 +105,9 @@ change on tasks that don't directly involve this topic?"
 - **Yes** → It's an instruction. It belongs in CLAUDE.md.
 - **No** → It's reference data or a task-specific convention. It belongs in `agent_docs/` or a command file.
 
-Present the classification alongside content in the next step (Propose extractions).
+Present the classification alongside content in the next step.
 
-### 5. Propose extractions
+### 6. Propose extractions
 
 Present findings to the user one at a time, grouped by type:
 
@@ -125,7 +125,7 @@ For each item, present:
 
 Wait for the user to approve, reject, or modify each item before moving to the next.
 
-### 5b. Budget check
+### 7. Budget check
 
 After drafting each proposed change, check whether applying it would exceed
 any budget in `BUDGETS.md`:
@@ -141,7 +141,7 @@ any budget in `BUDGETS.md`:
 
 Never silently exceed a budget. The user must consciously choose to go over.
 
-### 5c. Elevation test
+### 8. Elevation test
 
 For each proposed extraction, determine the minimum viable level:
 
@@ -168,7 +168,7 @@ Does removing this change Claude's behavior on unrelated tasks?
 Present the recommended level alongside each extraction proposal.
 The user can override, but the default should always be the lowest level.
 
-### 6. Apply approved changes
+### 9. Apply approved changes
 
 For each approved item:
 - Update the corresponding file in `golden/` (e.g., `golden/CLAUDE.md`, `golden/.claude/commands/<name>.md`)
@@ -196,7 +196,7 @@ For each approved item:
 
 Do NOT commit. Present a summary of all files changed and let the user review and commit manually.
 
-### 7. Summary
+### 10. Summary
 
 ```
 ## Extraction Complete
@@ -217,7 +217,7 @@ Do NOT commit. Present a summary of all files changed and let the user review an
 3. Commit when satisfied
 ```
 
-### 8. Budget health check
+### 11. Budget health check
 
 After applying approved extractions:
 
