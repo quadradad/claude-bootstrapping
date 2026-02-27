@@ -9,7 +9,7 @@
 {type}({scope}): {description}
 
 Types: feat | fix | refactor | docs | discovery | design | infra
-Scopes: defined per-project (see CLAUDE.md § Project-Specific Configuration)
+Scopes: defined per-project (see CLAUDE.md § Issue Scopes)
 ```
 
 ## Issue Body Structure
