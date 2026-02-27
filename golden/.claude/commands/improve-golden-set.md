@@ -75,6 +75,38 @@ For each classified item, build a diff report:
 
 If nothing has changed or everything is project-specific, report "No extractable improvements found" and stop.
 
+### 4b. Classify by content type
+
+For each item that is Novel or Golden modified, classify it:
+
+**Instruction** — a directive that changes behavior:
+- "Always write tests before implementation"
+- "Use conventional commits format"
+- "Never force-push shared branches"
+
+→ Candidate for CLAUDE.md (if universally applicable) or a command file (if task-specific)
+
+**Reference data** — information looked up during execution:
+- CLI command syntax
+- Format templates and examples
+- Checklists and verification steps
+- Operations reference tables
+
+→ Candidate for `agent_docs/` (never CLAUDE.md)
+
+**Hybrid** — an instruction with embedded reference data:
+- "Use conventional commits: type(scope): description. Types: feat, fix, refactor..."
+
+→ Split it. The instruction goes in CLAUDE.md ("Use conventional commits format").
+  The format spec goes in `agent_docs/`.
+
+**Classification test:** "If I removed this from CLAUDE.md, would Claude's behavior
+change on tasks that don't directly involve this topic?"
+- **Yes** → It's an instruction. It belongs in CLAUDE.md.
+- **No** → It's reference data or a task-specific convention. It belongs in `agent_docs/` or a command file.
+
+Present the classification alongside content in the next step (Propose extractions).
+
 ### 5. Propose extractions
 
 Present findings to the user one at a time, grouped by type:
