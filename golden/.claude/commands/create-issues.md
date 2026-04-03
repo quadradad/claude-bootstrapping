@@ -17,6 +17,12 @@ When CLAUDE.md defines a Task Tracker section using `tasks/todo.md`:
 - **Step 7:** Add rows to the Active table in `tasks/todo.md` with auto-incremented `T-NN` IDs. No labels.
 - **Step 8:** Validate by re-reading the file
 
+## Plan Mode
+
+**Enter plan mode now** (before Step 1). Steps 1–5 run in plan mode — reason through the full issue structure before any GitHub API calls. Exit plan mode before Step 7 (issue creation).
+
+This ensures high-quality planning before execution.
+
 ## Invocation
 
 ```
@@ -62,6 +68,8 @@ Extract:
 - **Dependencies**: Any ordering or blocking relationships discussed
 
 If no plan is found in conversation, ask: "I don't see a plan in our conversation. Could you describe what issues you'd like to create?"
+
+If the plan exists but has unresolved questions, open decisions, or vague scope — stop and suggest: "This plan has open questions that could lead to poorly scoped issues. Run `/grill-me` first to resolve them, then re-run `/create-issues`."
 
 ## Step 2. Survey Existing Issues
 
@@ -134,6 +142,39 @@ For each step in the plan, create one issue. Follow this format exactly:
 - Titles should be concise but descriptive — someone reading the backlog should understand the scope at a glance
 - Use the plan's language when possible so issues are traceable back to the plan
 - Label with ALL applicable labels (an issue touching multiple areas gets all relevant labels)
+
+### Issue Type Extras
+
+**Research/Discovery issues additionally include:**
+- `## Findings` section placeholder
+- `## Recommendation` section placeholder
+- Criteria for what "done" looks like (e.g., "at least 3 candidates compared")
+
+**Bug issues additionally include:**
+- `## Reproduction` section with steps
+- `## Errors` section with actual error output
+
+## Step 4a. Specialist Review
+
+While still in plan mode, spawn four specialist agents **in parallel** to review the drafted issues. Each agent receives the full draft batch and returns a structured verdict.
+
+**1. Scope reviewer** (model: sonnet):
+Review each issue for right-sizing. Is it a single implementation session? Is it secretly two issues bundled? Does the approach hide complexity that warrants a separate issue?
+Return per issue: PASS | WARN | FAIL with a one-line recommendation for WARN/FAIL.
+
+**2. Dependency reviewer** (model: haiku):
+Review dependencies against existing open issues. Are all blockers identified and sequenced? Are there missing dependencies? Can work proceed in the stated order?
+Return per dependency edge: PASS | WARN | FAIL with what's missing for WARN/FAIL.
+
+**3. Acceptance criteria reviewer** (model: sonnet):
+For each AC item: Is it specific and testable? Verifiable by code inspection or automated test? Free of vague language ("properly", "correctly", "as expected")?
+Return per criterion: PASS | WARN | FAIL with a rewritten criterion for WARN/FAIL.
+
+**4. Security reviewer** (model: haiku):
+Scan for security-relevant gaps. Do issues touching auth, data handling, or external inputs have security-specific AC items? Are there missing security considerations?
+Return: list of issues needing security AC additions.
+
+**Integrate findings:** For each WARN/FAIL finding, update the drafted issues before presenting for review in Step 6. Rewrite vague AC items. Split over-scoped issues. Add missing dependencies. Add security AC items where flagged.
 
 ## Step 5. Validate Dependency Graph
 
