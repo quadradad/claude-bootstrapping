@@ -45,6 +45,33 @@ Never force-push or rewrite history on shared branches.
 
 If a test file you did NOT modify is failing, create an issue and continue. Do not silently work around it.
 
+## Commands & Skills
+
+### Commands (slash commands)
+
+| Command | Purpose |
+|---------|---------|
+| `/wiggum` | Automated dev loop — pick next unblocked issue, implement, test, close, repeat |
+| `/triage` | Analyze backlog — dependency graph, readiness, label validation, prioritization |
+| `/create-issues` | Create issues from a plan — with tracking epic, dependencies, assignee resolution |
+| `/close-issue` | Validate acceptance criteria and close an issue with structured comment |
+| `/review-pr` | Review a PR against project quality standards |
+| `/validate-pr` | Validate a release PR — review, post findings, create issues for failures |
+| `/setup-release` | Plan a release — milestone, branch, implementation order |
+| `/bootstrap-claude` | Adapt Claude configuration to the current project's tech stack and conventions |
+| `/update-claude` | Pull golden set updates into a bootstrapped project |
+| `/improve-golden-set` | Extract generalized improvements from a project back into the golden set |
+| `/slim` | Audit the golden set for bloat and budget compliance — compress or remove content |
+
+### Skills (auto-invoked)
+
+| Skill | Purpose |
+|-------|---------|
+| `/shipit` | End-to-end autonomous delivery — from plan or spec to merged, deployed, and verified |
+| `/grill-me` | Stress-test a plan or design through relentless interview until shared understanding |
+| `/pomo` | Post-fix reflection — capture lessons learned and update project memory |
+| `/browser-automation` | Browser interaction — navigate, click, fill forms, screenshot, test web UIs |
+
 ## Reference Docs
 
 | Doc | When to read |
