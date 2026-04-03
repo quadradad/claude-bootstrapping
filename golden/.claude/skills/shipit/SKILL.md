@@ -2,16 +2,9 @@
 name: shipit
 user_invocable: true
 description: >
-  End-to-end autonomous delivery pipeline for a single Claude Code instance — from plan or spec to
-  merged, deployed, and verified code. Use this skill whenever the user says "ship it", "build this",
-  "execute this plan", "implement this spec", "run the whole thing", "take it from here", "/shipit",
-  or any variation of "here's what I want, go make it happen." This skill handles the full lifecycle:
-  decomposing work into GitHub issues, building dependency chains, implementing sequentially, running
-  tests, doing self-review, committing, pushing, creating PRs, merging, git cleanup, deployment
-  verification, and updating documentation — all within a single Claude Code session using a
-  continuous execution loop with persistent state. Use it even if the user doesn't mention all these
-  steps — the intent is "I have a plan or set of tasks and I want autonomous delivery to completion."
-  Works across any project by reading project context at runtime.
+  End-to-end autonomous delivery pipeline — from plan or spec to merged, deployed, and verified
+  code. Use when the user says "ship it", "build this", "execute this plan", "take it from here",
+  or any variation of "go make it happen." Works across any project by reading context at runtime.
 ---
 
 # /shipit — Solo Autonomous Delivery Pipeline
@@ -70,7 +63,7 @@ Read these sources to build your project context:
 1. **CLAUDE.md** — the repo's CLAUDE.md contains the working branch, service names, ports,
    database credentials, build commands, test commands, and operational details. This is your
    primary source of truth.
-2. **MEMORY.md** — check for infrastructure references, conventions, and prior feedback.
+2. **MEMORY.md** (if it exists) — check for infrastructure references, conventions, and prior feedback.
 3. **Docs directory** — if the project has a specs/, docs/, or vault/ directory, scan for
    buildspecs, existing plans, and architectural context.
 
@@ -130,7 +123,7 @@ Additionally, each issue includes:
 - For 8+ issues: create a GitHub tracking epic with checkbox child issues
 
 ### Labels
-Apply labels consistently: `enhancement`, `bug`, `refactor`, `docs`, `testing` as appropriate.
+Apply labels matching the project's issue types: `feat`, `fix`, `refactor`, `docs`, `discovery`, `design`, `infra` as appropriate.
 
 ### Create issues
 ```bash
@@ -261,7 +254,7 @@ All checklist items passed." \
   --base <working-branch>
 ```
 
-Use conventional commits: `feat:`, `fix:`, `refactor:`, `docs:`, `test:`, `chore:` as appropriate.
+Use conventional commits per project conventions: `feat:`, `fix:`, `refactor:`, `docs:`, `discovery:`, `design:`, `infra:` as appropriate.
 
 #### Step 6: Merge the PR
 ```bash
@@ -331,7 +324,7 @@ git fetch --prune
 
 # Delete any lingering local feature branches from this run
 # (use the issue numbers from the dispatch plan)
-git branch | grep -E "^  [0-9]+-" | xargs -r git branch -D
+git branch | grep -E "^  [0-9]+-" | xargs git branch -D 2>/dev/null
 
 # Verify clean state
 git status                     # should be clean, on working branch
