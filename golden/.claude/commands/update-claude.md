@@ -28,7 +28,17 @@ Confirm the golden set path:
 
 If any check fails, report the specific problem and stop.
 
-### 2. Validate the current project
+### 2. Run discovery manifest
+
+Run the manifest script to get a deterministic inventory of golden vs project contents:
+
+```bash
+bash <golden-path>/update-claude-manifest.sh <golden-path> .
+```
+
+This produces a structured listing of all categories (CLAUDE.md, commands, agents, skills, agent_docs, settings, MCP, governance) showing what exists in golden, what exists in the project, and what's new. **Use this output as the authoritative file inventory for all subsequent diff steps.** Do not independently glob or list directories — trust the manifest.
+
+### 3. Validate the current project
 
 Confirm the current project:
 - Has `CLAUDE.md` at the project root
@@ -37,7 +47,7 @@ Confirm the current project:
 
 If any check fails, report the specific problem and stop.
 
-### 3. Diff CLAUDE.md baseline
+### 4. Diff CLAUDE.md baseline
 
 Extract the project's baseline — everything above the bootstrap marker (`<!-- bootstrap-claude: project-specific below -->`). Compare it against `golden/CLAUDE.md`.
 
@@ -47,9 +57,9 @@ Classify the baseline as one of:
 - **Project modified:** Project changed its baseline, golden has the old version
 - **Diverged:** Both sides differ from each other
 
-### 4. Diff commands
+### 5. Diff commands
 
-For each file in `golden/.claude/commands/*.md`, check whether a matching file exists in the project's `.claude/commands/`:
+Using the COMMANDS section from the manifest, for each file listed under `golden:`, check whether it also appears under `project:` (files listed under `new:` are definitely new):
 
 - **New:** File exists in golden but not in the project
 - **Unchanged:** File is identical in both
@@ -61,9 +71,9 @@ Ignore project commands that do not exist in the golden set — those are projec
 
 **Note:** Without version tracking, distinguishing "Golden updated" from "Project modified" may not always be possible. When in doubt, classify as **Diverged** and let the user decide.
 
-### 5. Diff agent_docs
+### 6. Diff agent_docs
 
-For each file in `golden/agent_docs/*.md`, check whether a matching file exists in the project's `agent_docs/`:
+Using the AGENT_DOCS section from the manifest, for each file listed under `golden:`, check whether it also appears under `project:`:
 
 - **New:** File exists in golden but not in the project
 - **Unchanged:** File is identical in both
@@ -73,9 +83,9 @@ For each file in `golden/agent_docs/*.md`, check whether a matching file exists 
 
 Ignore project `agent_docs/` files that do not exist in the golden set — those are project-specific reference docs and must be left alone.
 
-### 6. Diff agents
+### 7. Diff agents
 
-For each file in `golden/.claude/agents/*.md`, check whether a matching file exists in the project's `.claude/agents/`:
+Using the AGENTS section from the manifest, for each file listed under `golden:`, check whether it also appears under `project:`:
 
 Apply the same classification as commands: **New**, **Unchanged**, **Golden updated**, **Project modified**, **Diverged**.
 
@@ -83,9 +93,9 @@ For agents with a bootstrap marker (`<!-- bootstrap-claude: project-specific che
 
 Ignore project agents that do not exist in the golden set.
 
-### 7. Diff skills
+### 8. Diff skills
 
-**First**, list all skill directories in `golden/.claude/skills/` (excluding `.DS_Store` and hidden files). Each subdirectory is a skill. **Then**, for each golden skill, check whether a matching directory exists in the project's `.claude/skills/`. Compare the `SKILL.md` files within each:
+Using the SKILLS section from the manifest, for each skill listed under `golden:`, check whether it also appears under `project:`. For skills that exist in both, compare the `SKILL.md` files within each:
 
 - **New:** Skill directory exists in golden but not in the project
 - **Unchanged:** `SKILL.md` is identical in both
@@ -97,7 +107,7 @@ If the project has no `.claude/skills/` directory at all, classify ALL golden sk
 
 Ignore project skills that do not exist in the golden set — those are project-specific and must be left alone.
 
-### 8. Diff settings.local.json
+### 9. Diff settings.local.json
 
 Parse the `allow` arrays from both `golden/.claude/settings.local.json` and the project's `.claude/settings.local.json`.
 
@@ -105,7 +115,7 @@ Identify permissions present in the golden set but absent from the project — t
 
 Never flag project-specific permissions for removal. Project permissions that are not in the golden set are project-specific and must be left alone.
 
-### 9. Diff .mcp.json
+### 10. Diff .mcp.json
 
 Compare server configurations between `golden/.mcp.json` and the project's `.mcp.json`.
 
@@ -113,7 +123,7 @@ Identify new servers in the golden set that are not in the project. Identify ser
 
 Never flag project-specific servers for removal.
 
-### 10. Diff governance files
+### 11. Diff governance files
 
 Compare `golden/BUDGETS.md` against the project's `BUDGETS.md` (if it exists):
 - If the project has no `BUDGETS.md`, flag as **New** — recommend adding
@@ -121,13 +131,13 @@ Compare `golden/BUDGETS.md` against the project's `BUDGETS.md` (if it exists):
 
 Similarly, compare `golden/CHANGELOG.md` against the project's `CHANGELOG.md`.
 
-### 11. Check for removed golden items
+### 12. Check for removed golden items
 
 Check for files that exist in the project's `.claude/commands/`, `.claude/agents/`, or `.claude/skills/` that match golden set naming patterns but no longer exist in the golden set. These are items that were previously deployed from golden but have since been removed from it.
 
 Skip project-specific commands generated by `/bootstrap-claude` (e.g., `add-endpoint.md`, `add-component.md`, `add-pipeline-step.md`, `update-docs.md`) — these were never part of the golden set. Only flag files whose names suggest golden set origin but are no longer present in the golden set.
 
-### 12. Assess results
+### 13. Assess results
 
 If everything is identical across all categories, report:
 
@@ -137,7 +147,7 @@ Already up to date. No golden set changes to apply.
 
 Stop here if nothing changed.
 
-### 13. Present changes for approval
+### 14. Present changes for approval
 
 Group findings by type and present each change individually for user approval.
 
@@ -163,7 +173,7 @@ Group findings by type and present each change individually for user approval.
 
 Wait for the user to approve or reject each change before proceeding.
 
-### 14. Apply approved changes
+### 15. Apply approved changes
 
 For each approved change:
 
@@ -191,7 +201,7 @@ For each approved change:
 
 **Removed items (approved for removal):** Delete the file from the project.
 
-### 15. Post-Application Budget Audit
+### 16. Post-Application Budget Audit
 
 After applying all changes, re-measure the project's CLAUDE.md against `BUDGETS.md`:
 
@@ -202,7 +212,7 @@ After applying all changes, re-measure the project's CLAUDE.md against `BUDGETS.
 
    "Budget exceeded: CLAUDE.md baseline is now NN lines (budget: 60). Consider running /slim to identify compression or relocation opportunities."
 
-### 16. Summary
+### 17. Summary
 
 Present a summary of all changes applied:
 
