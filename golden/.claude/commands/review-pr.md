@@ -13,7 +13,17 @@ Performs a repeatable, consistent review of a PR against the project's quality s
 ```
 /review-pr 42              # Review PR #42
 /review-pr 42 --diff-only  # Skip build/test gates, review code only
+/review-pr 42 --autonomous # Skip confirmation, return structured findings
 ```
+
+## Autonomous Mode
+
+When called by an automated workflow (e.g., `/wiggum` worker) where no user interaction is possible:
+- Skip the "ask before posting" confirmation — post the review comment automatically
+- Imply `--diff-only` (the caller already ran validation)
+- If verdict is REQUEST_CHANGES: return findings as structured text for the caller to fix, do NOT block
+
+Autonomous mode is activated when the caller passes `--autonomous` or when invoked from a subagent context.
 
 ## Review Sections
 
