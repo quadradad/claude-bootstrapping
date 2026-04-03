@@ -265,23 +265,40 @@ After merging, immediately continue:
 ## Release Completion
 
 When all milestone issues are closed:
-1. Run final validation using the project's validation command (from CLAUDE.md)
-2. Finalize the draft PR — update the body with completion status:
+
+### Validation gate
+
+1. Run `/validate-pr RELEASE_PR_NUMBER`
+2. Check the returned result:
+
+**PASS** — proceed to finalization (step 3 below).
+
+**ISSUES_CREATED** — validation found FAIL or WARN findings and created new issues in the milestone. Return to the main loop (step 2: select next issue). The new validation-created issues are treated identically to original milestone issues — they get implemented, tested, merged, and closed normally. When all issues are closed again, re-enter this Release Completion section and run validation again.
+
+**MAX_LAPS** — validation has run 3+ times and still has findings. Issues are still created for the new findings, but the loop does not restart. Proceed to finalization with a note about remaining findings documented in PR comments and as open issues for human review.
+
+### Finalization
+
+3. Finalize the draft PR — update the body with completion status:
    ```bash
    gh pr view RELEASE_PR_NUMBER --json body --jq '.body'
    gh pr edit RELEASE_PR_NUMBER --body "FINAL_BODY"
    ```
-3. Mark the draft PR ready for review:
+   If the result was **MAX_LAPS**, add a note at the bottom of the PR body:
+   > **Note:** Validation reached the maximum lap count. Remaining findings have been filed as issues and are documented in the PR comments above. Human review required.
+
+4. Mark the draft PR ready for review:
    ```bash
    gh pr ready RELEASE_PR_NUMBER
    ```
    Do NOT auto-merge to main — leave this for the user.
-4. Report:
+5. Report:
    ```
    ## Release Complete!
 
    Milestone: v1.0 — 12/12 closed (100%)
    PR to main: #30 (ready for review)
+   Validation: PASS (or MAX_LAPS — see PR comments)
 
    All issues implemented, tested, and merged to release branch.
    Review and merge PR #30 when ready.
@@ -303,7 +320,8 @@ If during implementation you discover:
 ## Autonomy & Stopping Conditions
 
 The loop is fully autonomous — no user interaction required. It runs until one of these conditions is met:
-- All milestone issues are closed (release complete — draft PR marked ready for review)
+- All milestone issues are closed AND `/validate-pr` returns PASS (release complete — draft PR marked ready for review)
+- All milestone issues are closed AND `/validate-pr` reaches MAX_LAPS (release finalized with remaining findings filed as issues and documented for human review)
 - All remaining issues are blocked or were skipped due to failures
 - A dependency cycle is detected
 - The user intervenes
@@ -322,3 +340,6 @@ Individual issue failures (test gate, unreproducible bugs) are logged and skippe
 - ALWAYS use the project's validation command as the pre-commit gate
 - If pre-existing tests are broken, create an issue — do NOT silently ignore them
 - The release draft PR is created by /setup-release and promoted to ready-for-review at completion — never create a second PR to main
+- ALWAYS run `/validate-pr` before marking a release PR ready for review
+
+Validation-created issues are treated identically to original milestone issues — they enter the normal implementation loop and must be closed before the release can complete.
