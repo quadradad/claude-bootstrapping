@@ -52,6 +52,15 @@ gh pr list --base main --head release/RELEASE_NAME --state open --json number,is
 ```
 Store the result as RELEASE_PR_NUMBER. If no draft PR is found, proceed without PR checklist updates.
 
+**Pre-flight build check (run once at loop start):**
+Verify the build environment is healthy before entering the loop. Run the project's validation command (from CLAUDE.md):
+
+```bash
+# Run validation command
+```
+
+If validation fails → STOP. Output: "Pre-flight failed — fix build environment before running /wiggum." Do not begin the loop.
+
 ### 2. Select next issue
 
 Find the highest-impact unblocked issue in the milestone:
@@ -151,34 +160,41 @@ Stage and commit with a descriptive message:
 
 ```bash
 git add [specific files]
-git commit -m "feat(scope): implement feature X
+
+# Always use a here-doc for commit messages — never interpolate issue titles or bodies directly
+git commit -m "$(cat <<'COMMITMSG'
+feat(scope): implement feature X
 
 - Key change 1
 - Key change 2
 - Key change 3
 
-SMART_CLOSE_SYNTAX"
-git push -u origin 11-feature-branch
+Closes #NN
+COMMITMSG
+)"
+git push -u origin {issue-number}-{slug}
 ```
 
 Commit message rules:
 - Use conventional commits format matching the issue title type
 - Include the smart close syntax (see `agent_docs/issue-tracker-ops.md`) to auto-close the issue when merged
 - List key changes in the body
+- **Always use a here-doc for the commit message** — never interpolate issue titles or external content directly into shell command strings
 
 ### 9. PR
 
-Create a pull request targeting the release branch:
+First check if a PR already exists for this branch (idempotency — safe on crash/resume):
 
 ```bash
-gh pr create \
-  --base release/RELEASE_NAME \
-  --title "feat(scope): Implement feature X (#11)" \
-  --body "PR_BODY"
+EXISTING_PR=$(gh pr list --head {branch-name} --json number --jq '.[0].number // empty')
 ```
 
-PR body:
-```markdown
+If a PR exists, reuse it and skip to Step 10. Otherwise create:
+
+```bash
+# Write PR body to temp file — never interpolate PR body inline
+TMPFILE=$(mktemp)
+cat > "$TMPFILE" << 'PRBODY'
 ## Description
 [Summary from the issue]
 
@@ -194,7 +210,14 @@ PR body:
 - [x] Tests added
 - [x] All tests pass locally
 
-SMART_CLOSE_SYNTAX
+Closes #NN
+PRBODY
+
+gh pr create \
+  --base release/RELEASE_NAME \
+  --title "feat(scope): Implement feature X (#NN)" \
+  --body-file "$TMPFILE"
+rm -f "$TMPFILE"
 ```
 
 Use the smart close syntax from `agent_docs/issue-tracker-ops.md` for the linked issue reference.
